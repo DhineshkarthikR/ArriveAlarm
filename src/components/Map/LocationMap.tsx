@@ -146,13 +146,24 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
       map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 
+      const loadTimeout = setTimeout(() => {
+        if (!map.loaded()) {
+          setMapError('Map loading timed out. Please try disabling your adblocker (e.g. Brave Shields) or check your connection.');
+        }
+      }, 8000);
+
       map.on('load', () => {
+        clearTimeout(loadTimeout);
         setIsMapLoaded(true);
         updateGeofenceLayers();
       });
 
       map.on('error', (e: MapLibreErrorEvent) => {
         console.warn('MapLibre load warning:', e);
+        if (e.error && e.error.message && e.error.message.toLowerCase().includes('style')) {
+           clearTimeout(loadTimeout);
+           setMapError('Failed to load map style. Please disable your adblocker or check your internet connection.');
+        }
       });
 
       // Map Click Handler to select destination
