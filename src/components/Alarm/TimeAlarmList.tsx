@@ -1,0 +1,354 @@
+import React, { useState } from 'react';
+import { AlarmClock, Clock, Trash2, Edit2, Plus, Repeat } from 'lucide-react';
+import type { AlarmSoundType, RepeatOption, TimeAlarm } from '../../types';
+import { useAlarm } from '../../context/AlarmContext';
+import { formatTime, getCountdownText, getRepeatLabel } from '../../utils/timeAlarm';
+import { SoundSelector } from './SoundSelector';
+
+export const TimeAlarmList: React.FC = () => {
+  const {
+    timeAlarms,
+    toggleTimeAlarm,
+    deleteTimeAlarm,
+    userSettings,
+    setActivePage,
+    nowMs,
+  } = useAlarm();
+
+  const [editingAlarm, setEditingAlarm] = useState<TimeAlarm | null>(null);
+
+  const is12H = userSettings.timeFormat === '12h';
+
+  if (timeAlarms.length === 0) {
+    return (
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 text-center space-y-4 shadow-sm">
+        <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+          <AlarmClock className="w-8 h-8" />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">No Alarms Set</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+            You don't have any active time alarms. Click below to schedule your first alarm.
+          </p>
+        </div>
+        <button
+          onClick={() => setActivePage('create')}
+          className="py-2.5 px-5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-2xl shadow-md transition-all inline-flex items-center gap-2 active:scale-95"
+        >
+          <Plus className="w-4 h-4" />
+          <span>+ Create New Alarm</span>
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <AlarmClock className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+          <span>Your Alarms ({timeAlarms.length})</span>
+        </h2>
+        <button
+          onClick={() => setActivePage('create')}
+          className="py-1.5 px-3 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 font-bold text-xs rounded-xl transition-all inline-flex items-center gap-1.5 active:scale-95"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>Add Alarm</span>
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {timeAlarms.map((alarm) => {
+          const { timeStr, period } = formatTime(alarm.hour, alarm.minute, is12H);
+          const targetTimestamp =
+            alarm.status === 'snoozed' && alarm.snoozedUntil
+              ? alarm.snoozedUntil
+              : alarm.nextRingTimestamp;
+          const countdown = alarm.enabled ? getCountdownText(targetTimestamp, nowMs) : 'Disabled';
+          const repeatLabel = getRepeatLabel(alarm.repeat, alarm.customDays);
+
+          return (
+            <div
+              key={alarm.id}
+              className={`p-4 sm:p-5 rounded-3xl border transition-all duration-200 ${
+                alarm.enabled
+                  ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md'
+                  : 'bg-slate-50/70 dark:bg-slate-950/40 border-slate-200/60 dark:border-slate-800/40 opacity-75'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-4">
+                {/* Left Time & Details */}
+                <div className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl sm:text-4xl font-black tracking-tight font-mono text-slate-900 dark:text-slate-100">
+                      {timeStr}
+                    </span>
+                    {period && (
+                      <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                        {period}
+                      </span>
+                    )}
+
+                    {alarm.status === 'snoozed' && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                        Snoozed
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      {alarm.label || 'Alarm'}
+                    </span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Repeat className="w-3 h-3 text-slate-400" />
+                      <span>{repeatLabel}</span>
+                    </span>
+                    <span>•</span>
+                    <span className="capitalize">{alarm.sound.replace('_', ' ')}</span>
+                  </div>
+
+                  {/* Countdown display */}
+                  <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 pt-0.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>{countdown}</span>
+                  </div>
+                </div>
+
+                {/* Right Controls & Toggle Switch */}
+                <div className="flex items-center gap-3 shrink-0">
+                  {/* ON/OFF Switch */}
+                  <button
+                    onClick={() => toggleTimeAlarm(alarm.id)}
+                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${
+                      alarm.enabled ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                        alarm.enabled ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+
+                  {/* Edit button */}
+                  <button
+                    onClick={() => setEditingAlarm(alarm)}
+                    className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    title="Edit alarm"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+
+                  {/* Delete button */}
+                  <button
+                    onClick={() => deleteTimeAlarm(alarm.id)}
+                    className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                    title="Delete alarm"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Edit Alarm Modal */}
+      {editingAlarm && (
+        <EditAlarmModal alarm={editingAlarm} onClose={() => setEditingAlarm(null)} />
+      )}
+    </div>
+  );
+};
+
+interface EditAlarmModalProps {
+  alarm: TimeAlarm;
+  onClose: () => void;
+}
+
+const EditAlarmModal: React.FC<EditAlarmModalProps> = ({ alarm, onClose }) => {
+  const { updateTimeAlarm } = useAlarm();
+
+  const [label, setLabel] = useState(alarm.label);
+  const [hour, setHour] = useState(alarm.hour);
+  const [minute, setMinute] = useState(alarm.minute);
+  const [repeat, setRepeat] = useState<RepeatOption>(alarm.repeat);
+  const [sound, setSound] = useState<AlarmSoundType>(alarm.sound);
+  const [volume, setVolume] = useState(alarm.volume);
+  const [snoozeDuration, setSnoozeDuration] = useState(alarm.snoozeDuration || 5);
+  const [customDays, setCustomDays] = useState<number[]>(alarm.customDays || []);
+
+  const handleSave = () => {
+    updateTimeAlarm(alarm.id, {
+      label,
+      hour,
+      minute,
+      repeat,
+      sound,
+      volume,
+      snoozeDuration,
+      customDays,
+      enabled: true,
+    });
+    onClose();
+  };
+
+  const toggleDay = (dayIndex: number) => {
+    if (customDays.includes(dayIndex)) {
+      setCustomDays(customDays.filter((d) => d !== dayIndex));
+    } else {
+      setCustomDays([...customDays, dayIndex]);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5 text-slate-900 dark:text-slate-100 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <Edit2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <span>Edit Alarm</span>
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-xs font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+          >
+            Cancel
+          </button>
+        </div>
+
+        {/* Time Input */}
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            Time (24-Hour Format)
+          </label>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <label className="text-[11px] text-slate-400 font-medium">Hour (0-23)</label>
+              <input
+                type="number"
+                min={0}
+                max={23}
+                value={hour}
+                onChange={(e) => setHour(Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
+                className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl font-bold font-mono text-center text-lg"
+              />
+            </div>
+            <span className="text-2xl font-bold pt-4">:</span>
+            <div className="flex-1">
+              <label className="text-[11px] text-slate-400 font-medium">Minute (0-59)</label>
+              <input
+                type="number"
+                min={0}
+                max={59}
+                value={minute}
+                onChange={(e) => setMinute(Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
+                className="w-full px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl font-bold font-mono text-center text-lg"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Label */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Label</label>
+          <input
+            type="text"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="Alarm name (e.g. Work, Gym)"
+            className="w-full px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium"
+          />
+        </div>
+
+        {/* Repeat Option */}
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Repeat</label>
+          <select
+            value={repeat}
+            onChange={(e) => setRepeat(e.target.value as RepeatOption)}
+            className="w-full px-3.5 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-medium"
+          >
+            <option value="once">Once</option>
+            <option value="daily">Every day</option>
+            <option value="weekdays">Weekdays (Mon-Fri)</option>
+            <option value="weekends">Weekends (Sat-Sun)</option>
+            <option value="custom">Custom Days</option>
+          </select>
+
+          {repeat === 'custom' && (
+            <div className="grid grid-cols-7 gap-1 pt-1">
+              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((dayChar, idx) => {
+                const isSelected = customDays.includes(idx);
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => toggleDay(idx)}
+                    className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
+                      isSelected
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                    }`}
+                  >
+                    {dayChar}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Snooze Duration */}
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Snooze Duration</label>
+          <div className="grid grid-cols-4 gap-2">
+            {[1, 5, 10, 15].map((mins) => (
+              <button
+                key={mins}
+                type="button"
+                onClick={() => setSnoozeDuration(mins)}
+                className={`py-1.5 text-xs font-bold rounded-xl border transition-all ${
+                  snoozeDuration === mins
+                    ? 'bg-indigo-600 text-white border-indigo-600'
+                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                }`}
+              >
+                {mins}m
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sound Selector */}
+        <SoundSelector
+          sound={sound}
+          volume={volume}
+          onChangeSound={setSound}
+          onChangeVolume={setVolume}
+        />
+
+        {/* Save Actions */}
+        <div className="pt-2 flex items-center justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="py-2.5 px-4 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 rounded-xl text-xs font-bold"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            className="py-2.5 px-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shadow-md transition-all active:scale-95"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+

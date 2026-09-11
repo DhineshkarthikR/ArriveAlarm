@@ -1,16 +1,51 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import type { ActivePage, Alarm, AlarmHistory, Coordinates, SavedPlace } from '../types';
+import type {
+  ActivePage,
+  Alarm,
+  AlarmHistory,
+  AlarmSoundType,
+  Coordinates,
+  RepeatOption,
+  SavedPlace,
+  TimeAlarm,
+  UserSettings,
+} from '../types';
 import { calculateDistance } from '../utils/distance';
 import { playAlarmSound, stopAlarmSound, triggerVibration } from '../utils/audio';
+import { calculateNextRingTimestamp } from '../utils/timeAlarm';
 import {
   addHistoryEntry,
   getActiveAlarmFromStorage,
   getAlarmHistory,
   getSavedPlaces,
+  getTimeAlarms,
+  getUserSettings,
   saveActiveAlarmToStorage,
+  saveTimeAlarms,
+  saveUserSettings,
 } from '../utils/storage';
 
 interface AlarmContextType {
+  // Live Clock & User Settings
+  nowMs: number;
+  userSettings: UserSettings;
+  setTimeFormat: (format: '12h' | '24h') => void;
+  updateSettings: (newSettings: Partial<UserSettings>) => void;
+  notificationPermission: NotificationPermission;
+  requestNotificationPermission: () => Promise<NotificationPermission>;
+
+  // Time Alarms (Multi-alarm management)
+  timeAlarms: TimeAlarm[];
+  ringingTimeAlarm: TimeAlarm | null;
+  addTimeAlarm: (alarmData: Omit<TimeAlarm, 'id' | 'createdAt' | 'status' | 'nextRingTimestamp'>) => TimeAlarm;
+  updateTimeAlarm: (id: string, alarmData: Partial<TimeAlarm>) => void;
+  deleteTimeAlarm: (id: string) => void;
+  toggleTimeAlarm: (id: string) => void;
+  snoozeTimeAlarm: (minutes?: number) => void;
+  stopRingingTimeAlarm: () => void;
+  quickAddAlarm: (minutesFromNow: number, label?: string) => void;
+
+  // Location Alarm (Backward compatible)
   activeAlarm: Alarm | null;
   currentLocation: Coordinates | null;
   currentDistance: number | null;
@@ -29,7 +64,7 @@ interface AlarmContextType {
   keepTracking: () => void;
   requestCurrentLocation: () => Promise<Coordinates | null>;
 
-  // Data lists
+  // Storage Lists
   history: AlarmHistory[];
   savedPlaces: SavedPlace[];
   refreshStorageData: () => void;
@@ -43,11 +78,29 @@ interface AlarmContextType {
 
 const AlarmContext = createContext<AlarmContextType | undefined>(undefined);
 
-// Default starting fallback location (Bengaluru City Center)
 const DEFAULT_COORDS: Coordinates = { lat: 12.9716, lng: 77.5946 };
 
 export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [nowMs, setNowMs] = useState<number>(Date.now());
   const [activePage, setActivePage] = useState<ActivePage>('home');
+  const [userSettings, setUserSettingsState] = useState<UserSettings>(() => getUserSettings());
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(
+    typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'default'
+  );
+
+  // Time Alarms state
+  const [timeAlarms, setTimeAlarmsState] = useState<TimeAlarm[]>(() => {
+    const rawAlarms = getTimeAlarms();
+    const now = Date.now();
+    // Recalculate nextRingTimestamp for loaded alarms
+    return rawAlarms.map((a) => {
+      const computed = calculateNextRingTimestamp(a.hour, a.minute, a.repeat, a.customDays);
+      return { ...a, nextRingTimestamp: computed };
+    });
+  });
+  const [ringingTimeAlarm, setRingingTimeAlarm] = useState<TimeAlarm | null>(null);
+
+  // Location Alarm state
   const [activeAlarm, setActiveAlarm] = useState<Alarm | null>(() => getActiveAlarmFromStorage());
   const [currentLocation, setCurrentLocation] = useState<Coordinates | null>(null);
   const [currentDistance, setCurrentDistance] = useState<number | null>(null);
@@ -60,20 +113,222 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [history, setHistory] = useState<AlarmHistory[]>(() => getAlarmHistory());
   const [savedPlaces, setSavedPlaces] = useState<SavedPlace[]>(() => getSavedPlaces());
 
-  // Demo Mode states
+  // Demo Mode
   const [demoMode, setDemoMode] = useState<boolean>(false);
-  const [demoDistance, setDemoDistanceState] = useState<number>(2000); // meters
+  const [demoDistance, setDemoDistanceState] = useState<number>(2000);
 
-  // Geolocation watcher ref
   const watchIdRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
+
+  // Save time alarms state to localStorage whenever changed
+  const updateTimeAlarmsList = (newList: TimeAlarm[]) => {
+    setTimeAlarmsState(newList);
+    saveTimeAlarms(newList);
+  };
+
+  // User Settings updates
+  const setTimeFormat = (format: '12h' | '24h') => {
+    const updated = saveUserSettings({ timeFormat: format });
+    setUserSettingsState(updated);
+  };
+
+  const updateSettings = (newSettings: Partial<UserSettings>) => {
+    const updated = saveUserSettings(newSettings);
+    setUserSettingsState(updated);
+  };
+
+  // Request browser notification permission
+  const requestNotificationPermission = async (): Promise<NotificationPermission> => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      const perm = await Notification.requestPermission();
+      setNotificationPermission(perm);
+      return perm;
+    }
+    return 'denied';
+  };
+
+  // Add a new Time Alarm
+  const addTimeAlarm = (
+    alarmData: Omit<TimeAlarm, 'id' | 'createdAt' | 'status' | 'nextRingTimestamp'>
+  ): TimeAlarm => {
+    const nextRingTimestamp = calculateNextRingTimestamp(
+      alarmData.hour,
+      alarmData.minute,
+      alarmData.repeat,
+      alarmData.customDays
+    );
+
+    const newAlarm: TimeAlarm = {
+      ...alarmData,
+      id: `time-alarm-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      status: 'idle',
+      nextRingTimestamp,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updated = [...timeAlarms, newAlarm];
+    updateTimeAlarmsList(updated);
+    return newAlarm;
+  };
+
+  // Quick add alarm (e.g. +5 min, +10 min)
+  const quickAddAlarm = (minutesFromNow: number, label?: string) => {
+    const targetDate = new Date(Date.now() + minutesFromNow * 60 * 1000);
+    const hour = targetDate.getHours();
+    const minute = targetDate.getMinutes();
+    const autoLabel = label || `Quick +${minutesFromNow}m`;
+
+    addTimeAlarm({
+      type: 'time',
+      label: autoLabel,
+      hour,
+      minute,
+      enabled: true,
+      sound: userSettings.defaultSound || 'classic',
+      volume: userSettings.defaultVolume || 80,
+      snoozeDuration: userSettings.defaultSnoozeDuration || 5,
+      repeat: 'once',
+      customDays: [],
+    });
+  };
+
+  // Update existing Time Alarm
+  const updateTimeAlarm = (id: string, alarmData: Partial<TimeAlarm>) => {
+    const updated = timeAlarms.map((alarm) => {
+      if (alarm.id !== id) return alarm;
+      const merged = { ...alarm, ...alarmData };
+      const nextRingTimestamp = calculateNextRingTimestamp(
+        merged.hour,
+        merged.minute,
+        merged.repeat,
+        merged.customDays
+      );
+      return { ...merged, nextRingTimestamp };
+    });
+    updateTimeAlarmsList(updated);
+  };
+
+  // Delete Time Alarm
+  const deleteTimeAlarm = (id: string) => {
+    const updated = timeAlarms.filter((a) => a.id !== id);
+    if (ringingTimeAlarm?.id === id) {
+      stopRingingTimeAlarm();
+    }
+    updateTimeAlarmsList(updated);
+  };
+
+  // Toggle Time Alarm ON/OFF
+  const toggleTimeAlarm = (id: string) => {
+    const updated = timeAlarms.map((alarm) => {
+      if (alarm.id !== id) return alarm;
+      const nextEnabled = !alarm.enabled;
+      const nextRingTimestamp = nextEnabled
+        ? calculateNextRingTimestamp(alarm.hour, alarm.minute, alarm.repeat, alarm.customDays)
+        : alarm.nextRingTimestamp;
+      return { ...alarm, enabled: nextEnabled, status: 'idle' as const, nextRingTimestamp };
+    });
+    updateTimeAlarmsList(updated);
+  };
+
+  // Snooze ringing Time Alarm
+  const snoozeTimeAlarm = (customMinutes?: number) => {
+    if (!ringingTimeAlarm) return;
+    stopAlarmSound();
+    setIsArrivedModalOpen(false);
+
+    const snoozeMins = customMinutes || ringingTimeAlarm.snoozeDuration || 5;
+    const snoozedUntil = Date.now() + snoozeMins * 60 * 1000;
+
+    const updated = timeAlarms.map((alarm) => {
+      if (alarm.id === ringingTimeAlarm.id) {
+        return {
+          ...alarm,
+          status: 'snoozed' as const,
+          snoozedUntil,
+        };
+      }
+      return alarm;
+    });
+
+    updateTimeAlarmsList(updated);
+    setRingingTimeAlarm(null);
+  };
+
+  // Stop ringing Time Alarm
+  const stopRingingTimeAlarm = () => {
+    stopAlarmSound();
+    setIsArrivedModalOpen(false);
+
+    if (ringingTimeAlarm) {
+      const updated = timeAlarms.map((alarm) => {
+        if (alarm.id === ringingTimeAlarm.id) {
+          const isOnce = alarm.repeat === 'once';
+          const nextRingTimestamp = calculateNextRingTimestamp(
+            alarm.hour,
+            alarm.minute,
+            alarm.repeat,
+            alarm.customDays,
+            new Date(Date.now() + 60000) // calculate from next minute onwards
+          );
+          return {
+            ...alarm,
+            enabled: isOnce ? false : alarm.enabled,
+            status: 'idle' as const,
+            snoozedUntil: undefined,
+            nextRingTimestamp,
+          };
+        }
+        return alarm;
+      });
+      updateTimeAlarmsList(updated);
+      setRingingTimeAlarm(null);
+    }
+  };
+
+  // Single Core Engine Ticker (Runs every 1 sec)
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      const currentMs = Date.now();
+      setNowMs(currentMs);
+
+      // Check Time Alarms
+      if (!ringingTimeAlarm && !activeAlarm) {
+        timeAlarms.forEach((alarm) => {
+          if (!alarm.enabled) return;
+
+          const targetTime =
+            alarm.status === 'snoozed' && alarm.snoozedUntil
+              ? alarm.snoozedUntil
+              : alarm.nextRingTimestamp;
+
+          if (currentMs >= targetTime && targetTime > 0) {
+            // Trigger Ringing Alarm!
+            setRingingTimeAlarm(alarm);
+            setIsArrivedModalOpen(true);
+
+            playAlarmSound(alarm.sound, alarm.volume, 0);
+            triggerVibration();
+
+            if (notificationPermission === 'granted') {
+              new Notification(`⏰ Alarm: ${alarm.label}`, {
+                body: `It's time! (${alarm.label})`,
+                icon: '/favicon.ico',
+              });
+            }
+          }
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timeAlarms, ringingTimeAlarm, activeAlarm, notificationPermission]);
 
   const refreshStorageData = () => {
     setHistory(getAlarmHistory());
     setSavedPlaces(getSavedPlaces());
   };
 
-  // Request browser current location
+  // Geolocation request
   const requestCurrentLocation = (): Promise<Coordinates | null> => {
     return new Promise((resolve) => {
       if (!('geolocation' in navigator)) {
@@ -92,7 +347,6 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         (err) => {
           console.warn('Geolocation error:', err.message);
           setGpsError('Could not get current location. Using map center.');
-          // Resolve default coords so app gracefully functions
           resolve(currentLocation || DEFAULT_COORDS);
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 5000 }
@@ -100,14 +354,12 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
-  // Synchronize Demo Mode distance changes
+  // Synchronize Demo Mode distance
   const setDemoDistance = (dist: number) => {
     setDemoDistanceState(dist);
     if (activeAlarm) {
-      // Calculate a simulated coordinate based on destination & requested distance
       const destLat = activeAlarm.latitude;
       const destLng = activeAlarm.longitude;
-      // 1 degree lat is approx 111,000 meters
       const offsetLat = dist / 111000;
       const simCoords = { lat: destLat + offsetLat, lng: destLng };
       setCurrentLocation(simCoords);
@@ -115,7 +367,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  // Start tracking
+  // Start tracking Location Alarm
   const startAlarm = (alarmData: Alarm) => {
     const trackingAlarm: Alarm = {
       ...alarmData,
@@ -129,7 +381,6 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsEarlyAlertTriggered(false);
     startTimeRef.current = Date.now();
 
-    // Get immediate location to compute initial distance
     requestCurrentLocation().then((coords) => {
       const activeCoords = coords || DEFAULT_COORDS;
       const dist = calculateDistance(
@@ -149,7 +400,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setActivePage('active');
   };
 
-  // Stop tracking
+  // Stop Location Alarm tracking
   const stopAlarm = () => {
     stopAlarmSound();
     if (watchIdRef.current !== null) {
@@ -163,7 +414,6 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         Math.round((Date.now() - startTimeRef.current) / 60000)
       );
 
-      // Add to history log
       addHistoryEntry({
         destinationName: activeAlarm.destinationName,
         address: activeAlarm.address,
@@ -187,7 +437,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     startTimeRef.current = null;
   };
 
-  // Snooze alarm for 1 min
+  // Snooze Location Alarm
   const snoozeAlarm = (minutes = 1) => {
     stopAlarmSound();
     setIsArrivedModalOpen(false);
@@ -204,13 +454,13 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  // Keep tracking after arrival
+  // Keep tracking after location arrival
   const keepTracking = () => {
     stopAlarmSound();
     setIsArrivedModalOpen(false);
   };
 
-  // Helper to process proximity & trigger alarms
+  // Proximity update helper for Location Alarm
   const updateProximity = (coords: Coordinates, alarm: Alarm) => {
     const dist = calculateDistance(
       coords.lat,
@@ -220,7 +470,6 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
     setCurrentDistance(dist);
 
-    // 1. Early alert check
     if (
       alarm.earlyAlertEnabled &&
       dist <= alarm.earlyAlertDistance &&
@@ -228,48 +477,40 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       !isEarlyAlertTriggered
     ) {
       setIsEarlyAlertTriggered(true);
-      if (Notification.permission === 'granted') {
+      if (notificationPermission === 'granted') {
         new Notification('🚨 ArriveAlarm Early Warning', {
           body: `You are approximately ${Math.round(dist)} meters away from ${alarm.destinationName}.`,
         });
       }
     }
 
-    // 2. Arrival check
     if (dist <= alarm.radius && alarm.status !== 'arrived') {
       triggerArrivalAlert(alarm);
     }
   };
 
-  // Trigger arrival notifications, audio, vibration, and UI modal
+  // Trigger arrival alert for Location Alarm
   const triggerArrivalAlert = (alarm: Alarm) => {
     const arrivedAlarm: Alarm = { ...alarm, status: 'arrived' };
     setActiveAlarm(arrivedAlarm);
     saveActiveAlarmToStorage(arrivedAlarm);
     setIsArrivedModalOpen(true);
 
-    // Audio sound
     playAlarmSound(alarm.sound, alarm.volume, alarm.durationSeconds);
 
-    // Vibration
     if (alarm.vibrationEnabled) {
       triggerVibration();
     }
 
-    // Web Notification
-    if (alarm.notificationEnabled && Notification.permission === 'granted') {
+    if (alarm.notificationEnabled && notificationPermission === 'granted') {
       new Notification('🎉 You have arrived!', {
         body: `You are within ${alarm.radius} meters of ${alarm.destinationName}.`,
         icon: '/favicon.ico',
       });
     }
-
-    if (alarm.autoStop) {
-      // Auto stop handling if user configured auto stop
-    }
   };
 
-  // Real Geolocation watch position effect
+  // Geolocation watch position
   useEffect(() => {
     if (!activeAlarm || demoMode) {
       if (watchIdRef.current !== null) {
@@ -310,6 +551,21 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <AlarmContext.Provider
       value={{
+        nowMs,
+        userSettings,
+        setTimeFormat,
+        updateSettings,
+        notificationPermission,
+        requestNotificationPermission,
+        timeAlarms,
+        ringingTimeAlarm,
+        addTimeAlarm,
+        updateTimeAlarm,
+        deleteTimeAlarm,
+        toggleTimeAlarm,
+        snoozeTimeAlarm,
+        stopRingingTimeAlarm,
+        quickAddAlarm,
         activeAlarm,
         currentLocation,
         currentDistance,

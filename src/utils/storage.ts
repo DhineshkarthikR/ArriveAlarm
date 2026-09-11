@@ -1,22 +1,45 @@
-import type { Alarm, AlarmHistory, SavedPlace, UserSettings } from '../types';
+import type { Alarm, AlarmHistory, SavedPlace, TimeAlarm, UserSettings } from '../types';
 
 const KEYS = {
   SAVED_PLACES: 'arrivealarm_saved_places',
   HISTORY: 'arrivealarm_history',
   SETTINGS: 'arrivealarm_settings',
   ACTIVE_ALARM: 'arrivealarm_active_alarm',
+  TIME_ALARMS: 'arrivealarm_time_alarms',
 };
 
 const DEFAULT_SETTINGS: UserSettings = {
   theme: 'system',
+  timeFormat: '12h',
   defaultRadius: 200,
-  defaultSound: 'default',
+  defaultSound: 'classic',
+  defaultVolume: 80,
+  defaultSnoozeDuration: 5,
   defaultVibration: true,
   defaultDurationSeconds: 30,
   batteryMode: 'normal',
   autoStop: true,
   onboardingCompleted: false,
 };
+
+const SAMPLE_TIME_ALARMS: TimeAlarm[] = [
+  {
+    id: 'sample-alarm-1',
+    type: 'time',
+    label: 'Morning Alarm',
+    hour: 7,
+    minute: 0,
+    enabled: true,
+    sound: 'morning',
+    volume: 80,
+    snoozeDuration: 5,
+    repeat: 'weekdays',
+    customDays: [1, 2, 3, 4, 5],
+    nextRingTimestamp: 0, // Will be computed dynamically on load
+    status: 'idle',
+    createdAt: new Date().toISOString(),
+  },
+];
 
 const SAMPLE_SAVED_PLACES: SavedPlace[] = [
   {
@@ -78,6 +101,27 @@ const SAMPLE_HISTORY: AlarmHistory[] = [
     durationMinutes: 45,
   },
 ];
+
+export function getTimeAlarms(): TimeAlarm[] {
+  try {
+    const raw = localStorage.getItem(KEYS.TIME_ALARMS);
+    if (!raw) {
+      localStorage.setItem(KEYS.TIME_ALARMS, JSON.stringify(SAMPLE_TIME_ALARMS));
+      return SAMPLE_TIME_ALARMS;
+    }
+    return JSON.parse(raw);
+  } catch {
+    return SAMPLE_TIME_ALARMS;
+  }
+}
+
+export function saveTimeAlarms(alarms: TimeAlarm[]): void {
+  try {
+    localStorage.setItem(KEYS.TIME_ALARMS, JSON.stringify(alarms));
+  } catch (err) {
+    console.error('Failed to save time alarms:', err);
+  }
+}
 
 export function getSavedPlaces(): SavedPlace[] {
   try {
@@ -180,3 +224,4 @@ export function saveActiveAlarmToStorage(alarm: Alarm | null): void {
     localStorage.setItem(KEYS.ACTIVE_ALARM, JSON.stringify(alarm));
   }
 }
+
