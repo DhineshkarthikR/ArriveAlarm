@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import type { Coordinates } from '../../types';
-import { LocationMap } from './LocationMap';
+
+// Lazy load LocationMap to keep maplibre-gl out of the initial critical render path
+const LocationMapLazy = lazy(() =>
+  import('./LocationMap').then((m) => ({ default: m.LocationMap }))
+);
 
 interface MapViewProps {
   destination: Coordinates;
@@ -17,5 +21,17 @@ interface MapViewProps {
 }
 
 export const MapView: React.FC<MapViewProps> = (props) => {
-  return <LocationMap {...props} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full h-full min-h-[350px] sm:min-h-[420px] rounded-2xl border border-[#222222] bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center space-y-3">
+          <div className="w-7 h-7 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-mono text-zinc-400">Loading Map Engine...</span>
+        </div>
+      }
+    >
+      <LocationMapLazy {...props} />
+    </Suspense>
+  );
 };
+

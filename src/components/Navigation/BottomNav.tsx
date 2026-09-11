@@ -17,7 +17,7 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-3 left-3 right-3 z-40 bg-[#0b1329]/90 backdrop-blur-xl border border-cyan-500/20 rounded-2xl px-2 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+    <nav className="md:hidden fixed bottom-3 left-3 right-3 z-40 bg-[#0A0A0A]/95 backdrop-blur-md border border-[#222222] rounded-2xl px-1 py-1 shadow-2xl">
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -27,19 +27,19 @@ export const BottomNav: React.FC = () => {
               key={item.id}
               onClick={() => setActivePage(item.id)}
               className={clsx(
-                'relative flex flex-col items-center py-1 px-2.5 rounded-xl transition-all cursor-pointer',
+                'relative flex flex-col items-center justify-center min-h-[44px] min-w-[44px] py-1 px-2.5 rounded-xl transition-all cursor-pointer',
                 isActive
-                  ? 'text-cyan-400 font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'text-white font-semibold bg-[#161616] border border-[#2A2A2A]'
+                  : 'text-zinc-400 hover:text-white'
               )}
             >
               <div className="relative">
-                <Icon className={clsx('w-5 h-5', isActive && 'text-cyan-400 text-cyan-glow')} />
+                <Icon className={clsx('w-4 h-4', isActive && 'text-blue-400')} />
                 {item.id === 'active' && isTracking && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-[#0b1329] animate-pulse" />
+                  <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
                 )}
               </div>
-              <span className="text-[10px] mt-0.5 font-mono tracking-tight">{item.label}</span>
+              <span className="text-[10px] mt-0.5 font-sans tracking-tight">{item.label}</span>
             </button>
           );
         })}
@@ -47,4 +47,5 @@ export const BottomNav: React.FC = () => {
     </nav>
   );
 };
+
 

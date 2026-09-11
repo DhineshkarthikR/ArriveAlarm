@@ -169,24 +169,24 @@ export const CreateAlarm: React.FC = () => {
   return (
     <div className="space-y-6 animate-slide-up pb-12">
       {/* Title & Mode Switcher */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hud-card p-6 rounded-3xl border border-cyan-500/20">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#0a0a0a] p-6 rounded-2xl border border-[#222222]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
-            GUIDED ALARM SETUP
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Set New Alarm
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 font-sans mt-1">
+          <p className="text-xs sm:text-sm text-neutral-400 font-sans mt-1">
             Choose between Location Arrival Geofence (GPS) or Precise Time Alarm.
           </p>
         </div>
 
         {/* Tab Selection Switch */}
-        <div className="flex items-center bg-slate-950/80 p-1.5 rounded-2xl border border-cyan-500/20">
+        <div className="flex items-center bg-[#111111] p-1 rounded-xl border border-[#222222]">
           <button
             onClick={() => setActiveTab('time')}
-            className={`px-4 py-2 text-xs font-mono font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 text-xs font-mono font-bold rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'time'
-                ? 'bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(0,242,255,0.4)]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white text-black shadow-sm'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             <AlarmClock className="w-4 h-4" />
@@ -195,10 +195,10 @@ export const CreateAlarm: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('location')}
-            className={`px-4 py-2 text-xs font-mono font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 text-xs font-mono font-bold rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'location'
-                ? 'bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(0,242,255,0.4)]'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-white text-black shadow-sm'
+                : 'text-neutral-400 hover:text-white'
             }`}
           >
             <MapPin className="w-4 h-4" />
@@ -209,7 +209,7 @@ export const CreateAlarm: React.FC = () => {
 
       {/* Stepped Wizard Progress Indicator for Location Alarms */}
       {activeTab === 'location' && (
-        <div className="grid grid-cols-4 gap-2 hud-card p-4 rounded-2xl border border-cyan-500/20">
+        <div className="grid grid-cols-4 gap-2 bg-[#0a0a0a] p-3 rounded-2xl border border-[#222222]">
           {[
             { num: 1, title: '01. DESTINATION' },
             { num: 2, title: '02. RADIUS' },
@@ -224,10 +224,10 @@ export const CreateAlarm: React.FC = () => {
                 onClick={() => setCurrentStep(s.num)}
                 className={`py-2.5 px-3 rounded-xl text-[11px] font-mono font-bold transition-all text-center border cursor-pointer ${
                   isCurrent
-                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-[0_0_12px_rgba(0,242,255,0.3)]'
+                    ? 'bg-white/10 text-white border-white/30'
                     : isDone
-                    ? 'bg-slate-900/80 text-emerald-400 border-emerald-500/30'
-                    : 'bg-slate-900/40 text-slate-500 border-slate-800'
+                    ? 'bg-[#111111] text-emerald-400 border-emerald-500/30'
+                    : 'bg-[#111111] text-neutral-500 border-[#222222]'
                 }`}
               >
                 {s.title}

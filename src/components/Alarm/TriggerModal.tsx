@@ -61,37 +61,31 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-lg animate-fadeIn">
-      {/* Fullscreen pulsing background rings */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        <div className="w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-3xl animate-ping" />
-        <div className="w-[300px] h-[300px] bg-rose-500/30 rounded-full blur-2xl animate-pulse" />
-      </div>
-
-      <div className="bg-slate-900 border-2 border-indigo-500/60 rounded-3xl p-6 sm:p-10 max-w-md w-full text-center shadow-2xl relative overflow-hidden text-white space-y-6 z-10 animate-bounce-slow">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-fadeIn">
+      <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-3xl p-6 sm:p-10 max-w-md w-full text-center shadow-2xl relative overflow-hidden text-white space-y-6 z-10">
         {/* Ringing Bell Icon Header */}
-        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-rose-500 text-white flex items-center justify-center mx-auto shadow-xl shadow-indigo-500/40 animate-bounce">
-          <Bell className="w-10 h-10 sm:w-12 sm:h-12" />
+        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white text-black flex items-center justify-center mx-auto shadow-xl animate-bounce">
+          <Bell className="w-10 h-10 sm:w-12 sm:h-12 text-black" />
         </div>
 
         {/* Live Large Time Display */}
         <div className="space-y-1">
-          <span className="inline-block px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+          <span className="inline-block px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase bg-[#111111] text-white border border-[#222222]">
             {isTimeAlarm ? '⏰ TIME ALARM' : '📍 LOCATION ALARM'}
           </span>
 
           <div className="text-5xl sm:text-6xl font-black font-mono tracking-tight text-white pt-2">
             {formattedNow.timeStr}
             {formattedNow.period && (
-              <span className="text-2xl font-sans text-indigo-400 font-bold ml-2">
+              <span className="text-2xl font-sans text-neutral-400 font-bold ml-2">
                 {formattedNow.period}
               </span>
             )}
           </div>
 
-          <h2 className="text-lg sm:text-xl font-bold text-slate-200 mt-1 flex items-center justify-center gap-2">
+          <h2 className="text-lg sm:text-xl font-bold text-neutral-200 mt-1 flex items-center justify-center gap-2">
             {isTimeAlarm ? (
-              <AlarmClock className="w-5 h-5 text-indigo-400" />
+              <AlarmClock className="w-5 h-5 text-blue-400" />
             ) : (
               <MapPin className="w-5 h-5 text-rose-400" />
             )}
@@ -104,7 +98,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
           {/* Prominent Stop Button */}
           <button
             onClick={handleStop}
-            className="w-full py-4 sm:py-5 px-6 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 active:from-rose-700 active:to-rose-800 text-white font-black text-lg rounded-2xl shadow-xl shadow-rose-600/40 transition-all flex items-center justify-center gap-3 transform active:scale-95 cursor-pointer"
+            className="w-full py-4 sm:py-5 px-6 bg-rose-600 hover:bg-rose-500 text-white font-black text-lg rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 transform active:scale-95 cursor-pointer"
           >
             <Square className="w-6 h-6 fill-current" />
             <span>STOP ALARM</span>
@@ -112,7 +106,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
 
           {/* Snooze Options Selector */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-medium px-1">
+            <div className="flex items-center justify-between text-xs text-neutral-400 font-medium px-1">
               <span>Snooze Duration</span>
               <span className="text-amber-400 font-bold">{selectedSnoozeMins} min</span>
             </div>
@@ -125,10 +119,10 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
                     setSelectedSnoozeMins(mins);
                     handleSnooze(mins);
                   }}
-                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-1 active:scale-95 ${
+                  className={`py-2 px-2 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-1 active:scale-95 cursor-pointer ${
                     selectedSnoozeMins === mins
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md'
-                      : 'bg-slate-800 hover:bg-slate-700 text-amber-300 border-slate-700'
+                      ? 'bg-amber-500 text-black border-amber-400 shadow-md'
+                      : 'bg-[#111111] hover:bg-[#1a1a1a] text-amber-300 border-[#222222]'
                   }`}
                 >
                   <Clock className="w-3 h-3" />
@@ -141,7 +135,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
           {isLocationAlarm && (
             <button
               onClick={keepTracking}
-              className="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700 transition-all"
+              className="w-full py-2.5 px-4 bg-[#111111] hover:bg-[#1a1a1a] text-neutral-300 text-xs font-semibold rounded-xl border border-[#222222] transition-all cursor-pointer"
             >
               Keep Location Tracking Active
             </button>

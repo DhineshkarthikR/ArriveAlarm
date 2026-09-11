@@ -21,19 +21,19 @@ export const TimeAlarmList: React.FC = () => {
 
   if (timeAlarms.length === 0) {
     return (
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 text-center space-y-4 shadow-sm">
-        <div className="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
+      <div className="bg-[#0a0a0a] border border-[#222222] rounded-2xl p-8 text-center space-y-4 shadow-sm">
+        <div className="w-16 h-16 rounded-full bg-[#111111] text-white flex items-center justify-center mx-auto border border-[#222222]">
           <AlarmClock className="w-8 h-8" />
         </div>
         <div className="space-y-1">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">No Alarms Set</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+          <h3 className="text-lg font-bold text-white">No Alarms Set</h3>
+          <p className="text-xs text-neutral-400 max-w-sm mx-auto">
             You don't have any active time alarms. Click below to schedule your first alarm.
           </p>
         </div>
         <button
           onClick={() => setActivePage('create')}
-          className="py-2.5 px-5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-2xl shadow-md transition-all inline-flex items-center gap-2 active:scale-95"
+          className="py-2.5 px-5 bg-white hover:bg-neutral-200 text-black font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center gap-2 active:scale-95 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>+ Create New Alarm</span>
@@ -45,13 +45,13 @@ export const TimeAlarmList: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-          <AlarmClock className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+        <h2 className="text-base font-bold text-white flex items-center gap-2">
+          <AlarmClock className="w-5 h-5 text-white" />
           <span>Your Alarms ({timeAlarms.length})</span>
         </h2>
         <button
           onClick={() => setActivePage('create')}
-          className="py-1.5 px-3 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 font-bold text-xs rounded-xl transition-all inline-flex items-center gap-1.5 active:scale-95"
+          className="py-1.5 px-3 bg-[#111111] border border-[#222222] text-white hover:border-neutral-600 font-bold text-xs rounded-xl transition-all inline-flex items-center gap-1.5 active:scale-95 cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5" />
           <span>Add Alarm</span>
@@ -71,39 +71,39 @@ export const TimeAlarmList: React.FC = () => {
           return (
             <div
               key={alarm.id}
-              className={`p-4 sm:p-5 rounded-3xl border transition-all duration-200 ${
+              className={`p-4 sm:p-5 rounded-2xl border transition-all duration-200 ${
                 alarm.enabled
-                  ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md'
-                  : 'bg-slate-50/70 dark:bg-slate-950/40 border-slate-200/60 dark:border-slate-800/40 opacity-75'
+                  ? 'bg-[#0a0a0a] border-[#222222]'
+                  : 'bg-[#0a0a0a]/50 border-[#1a1a1a] opacity-60'
               }`}
             >
               <div className="flex items-center justify-between gap-4">
                 {/* Left Time & Details */}
                 <div className="space-y-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl sm:text-4xl font-black tracking-tight font-mono text-slate-900 dark:text-slate-100">
+                    <span className="text-3xl sm:text-4xl font-black tracking-tight font-mono text-white">
                       {timeStr}
                     </span>
                     {period && (
-                      <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                      <span className="text-sm font-bold text-neutral-400">
                         {period}
                       </span>
                     )}
 
                     {alarm.status === 'snoozed' && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
                         Snoozed
                       </span>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-neutral-400">
+                    <span className="font-semibold text-white">
                       {alarm.label || 'Alarm'}
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
-                      <Repeat className="w-3 h-3 text-slate-400" />
+                      <Repeat className="w-3 h-3 text-neutral-500" />
                       <span>{repeatLabel}</span>
                     </span>
                     <span>•</span>
@@ -111,8 +111,8 @@ export const TimeAlarmList: React.FC = () => {
                   </div>
 
                   {/* Countdown display */}
-                  <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5 pt-0.5">
-                    <Clock className="w-3.5 h-3.5" />
+                  <div className="text-xs font-semibold text-blue-400 flex items-center gap-1.5 pt-0.5">
+                    <Clock className="w-3.5 h-3.5 text-blue-400" />
                     <span>{countdown}</span>
                   </div>
                 </div>
@@ -122,13 +122,13 @@ export const TimeAlarmList: React.FC = () => {
                   {/* ON/OFF Switch */}
                   <button
                     onClick={() => toggleTimeAlarm(alarm.id)}
-                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none ${
-                      alarm.enabled ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
+                    className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors focus:outline-none cursor-pointer ${
+                      alarm.enabled ? 'bg-white' : 'bg-[#222222]'
                     }`}
                   >
                     <span
-                      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                        alarm.enabled ? 'translate-x-6' : 'translate-x-1'
+                      className={`inline-block h-5 w-5 transform rounded-full transition-transform ${
+                        alarm.enabled ? 'translate-x-6 bg-black' : 'translate-x-1 bg-neutral-400'
                       }`}
                     />
                   </button>
@@ -136,7 +136,7 @@ export const TimeAlarmList: React.FC = () => {
                   {/* Edit button */}
                   <button
                     onClick={() => setEditingAlarm(alarm)}
-                    className="p-2 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    className="p-2 text-neutral-400 hover:text-white rounded-xl hover:bg-[#111111] transition-colors cursor-pointer"
                     title="Edit alarm"
                   >
                     <Edit2 className="w-4 h-4" />
@@ -145,7 +145,7 @@ export const TimeAlarmList: React.FC = () => {
                   {/* Delete button */}
                   <button
                     onClick={() => deleteTimeAlarm(alarm.id)}
-                    className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                    className="p-2 text-neutral-400 hover:text-rose-400 rounded-xl hover:bg-rose-500/10 transition-colors cursor-pointer"
                     title="Delete alarm"
                   >
                     <Trash2 className="w-4 h-4" />

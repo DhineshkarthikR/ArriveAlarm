@@ -37,10 +37,9 @@ const MainContent: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#070b14] bg-grid-pattern text-slate-100 relative overflow-x-hidden">
-      {/* Ambient Radial Glowing Orbs */}
-      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-glow" />
-      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+    <div className="min-h-screen flex flex-col bg-[#000000] text-white relative overflow-x-hidden">
+      {/* Subtle grid texture overlay */}
+      <div className="fixed inset-0 bg-subtle-grid pointer-events-none -z-10" />
 
       {/* Floating Header */}
       <Header />
