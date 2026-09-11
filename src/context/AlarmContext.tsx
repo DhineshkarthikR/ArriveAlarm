@@ -3,9 +3,7 @@ import type {
   ActivePage,
   Alarm,
   AlarmHistory,
-  AlarmSoundType,
   Coordinates,
-  RepeatOption,
   SavedPlace,
   TimeAlarm,
   UserSettings,
@@ -91,7 +89,6 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Time Alarms state
   const [timeAlarms, setTimeAlarmsState] = useState<TimeAlarm[]>(() => {
     const rawAlarms = getTimeAlarms();
-    const now = Date.now();
     // Recalculate nextRingTimestamp for loaded alarms
     return rawAlarms.map((a) => {
       const computed = calculateNextRingTimestamp(a.hour, a.minute, a.repeat, a.customDays);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PlusCircle, History as HistoryIcon, MapPin, Bell, Star, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { MapPin, Bell, Star, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useAlarm } from '../context/AlarmContext';
 import { LiveClock } from '../components/Clock/LiveClock';
 import { QuickAlarmButtons } from '../components/Clock/QuickAlarmButtons';
