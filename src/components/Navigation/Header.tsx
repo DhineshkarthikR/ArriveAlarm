@@ -85,7 +85,7 @@ export const Header: React.FC = () => {
             onClick={() => setDemoMode(!demoMode)}
             className={`flex items-center gap-1 px-2 py-1.5 rounded-md text-[11px] font-medium transition-colors cursor-pointer ${
               demoMode
-                ? 'bg-amber-500/10 text-amber-400'
+                ? 'bg-[#222222] text-white border border-[#333333]'
                 : 'text-[#555555] hover:text-white'
             }`}
             title="Toggle GPS Demo Simulator"

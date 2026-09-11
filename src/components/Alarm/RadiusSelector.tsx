@@ -41,11 +41,11 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({ radius, onChange
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100">
-          <Radio className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+        <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white">
+          <Radio className="w-4 h-4 text-white" />
           <span>Alert Radius</span>
         </label>
-        <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/50 px-2.5 py-0.5 rounded-full">
+        <span className="text-xs font-semibold text-[#A3A3A3] bg-[#111111] border border-[#333333] px-2.5 py-0.5 rounded-full">
           {formatText(radius)}
         </span>
       </div>
@@ -62,8 +62,8 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({ radius, onChange
               className={clsx(
                 'py-2 px-3 rounded-xl text-xs font-semibold border transition-all duration-150',
                 isSelected
-                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/20'
-                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  ? 'bg-white border-white text-black shadow-md'
+                  : 'bg-[#080808] border-[#333333] text-[#A3A3A3] hover:text-white hover:bg-[#111111]'
               )}
             >
               {preset.label}
@@ -84,8 +84,8 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({ radius, onChange
           className={clsx(
             'px-3 py-2 rounded-xl text-xs font-semibold border shrink-0 transition-colors',
             isCustom
-              ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
-              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+              ? 'bg-white border-white text-black shadow-sm'
+              : 'bg-[#080808] border-[#333333] text-[#A3A3A3] hover:text-white'
           )}
         >
           Custom
@@ -99,7 +99,7 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({ radius, onChange
               value={customValue}
               onChange={handleCustomChange}
               placeholder="e.g. 250"
-              className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+              className="w-full px-3 py-2 bg-[#080808] border border-[#333333] rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white"
             />
             <span className="absolute right-3 text-xs text-slate-400 font-medium">meters</span>
           </div>
@@ -107,7 +107,7 @@ export const RadiusSelector: React.FC<RadiusSelectorProps> = ({ radius, onChange
       </div>
 
       <p className="text-[11px] text-slate-500 dark:text-slate-400">
-        Alert triggers when you arrive within <span className="font-semibold text-slate-800 dark:text-slate-200">{formatText(radius)}</span> of your destination.
+        Alert triggers when you arrive within <span className="font-semibold text-white">{formatText(radius)}</span> of your destination.
       </p>
     </div>
   );

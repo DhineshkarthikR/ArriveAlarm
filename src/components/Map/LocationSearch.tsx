@@ -84,10 +84,10 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setIsOpen(true)}
           placeholder={placeholder}
-          className="w-full pl-10 pr-10 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-sm transition-all"
+          className="w-full pl-10 pr-10 py-3 bg-[#080808] border border-[#333333] rounded-2xl text-xs sm:text-sm text-white placeholder:text-[#737373] focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
         />
         {isLoading ? (
-          <Loader2 className="absolute right-3.5 w-4 h-4 text-indigo-500 animate-spin" />
+          <Loader2 className="absolute right-3.5 w-4 h-4 text-white animate-spin" />
         ) : query ? (
           <button
             onClick={handleClear}
@@ -100,18 +100,18 @@ export const LocationSearch: React.FC<LocationSearchProps> = ({
 
       {/* Autocomplete Dropdown */}
       {isOpen && results.length > 0 && (
-        <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden z-50 animate-fadeIn divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="absolute left-0 right-0 mt-2 bg-[#111111] border border-[#333333] rounded-2xl shadow-xl overflow-hidden z-50 animate-fadeIn divide-y divide-[#262626]">
           {results.map((item) => (
             <div
               key={item.id}
               onClick={() => handleSelect(item)}
-              className="p-3.5 hover:bg-indigo-50/50 dark:hover:bg-slate-800/60 cursor-pointer flex items-start gap-3 transition-colors group"
+              className="p-3.5 hover:bg-[#1A1A1A] cursor-pointer flex items-start gap-3 transition-colors group"
             >
-              <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-950 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mt-0.5">
+              <div className="p-2 rounded-xl bg-[#1F1F1F] text-[#A3A3A3] group-hover:bg-white group-hover:text-black transition-colors mt-0.5">
                 <MapPin className="w-4 h-4" />
               </div>
               <div>
-                <p className="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                <p className="font-semibold text-xs sm:text-sm text-white">
                   {item.name}
                 </p>
                 <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">

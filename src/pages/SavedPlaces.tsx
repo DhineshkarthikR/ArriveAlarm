@@ -98,7 +98,7 @@ export const SavedPlaces: React.FC = () => {
                   </span>
 
                   {place.earlyAlertEnabled && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-500/5 text-amber-400/80 border border-amber-500/10">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#111111] text-[#A3A3A3] border border-[#333333]">
                       Early: {place.earlyAlertDistance >= 1000 ? `${place.earlyAlertDistance / 1000}km` : `${place.earlyAlertDistance}m`}
                     </span>
                   )}

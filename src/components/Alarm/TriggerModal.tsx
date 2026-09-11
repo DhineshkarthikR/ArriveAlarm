@@ -107,7 +107,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs text-[#555555]">
               <span>Snooze</span>
-              <span className="text-amber-400">{selectedSnoozeMins} min</span>
+              <span className="text-white">{selectedSnoozeMins} min</span>
             </div>
 
             <div className="grid grid-cols-4 gap-1.5">
@@ -120,7 +120,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({ isOpen }) => {
                   }}
                   className={`py-1.5 px-2 rounded-md text-xs font-medium border transition-colors flex items-center justify-center gap-1 cursor-pointer ${
                     selectedSnoozeMins === mins
-                      ? 'bg-amber-500 text-black border-amber-400'
+                      ? 'bg-white text-black border-white'
                       : 'bg-[#111111] text-[#888888] border-[#1a1a1a] hover:border-[#333333]'
                   }`}
                 >

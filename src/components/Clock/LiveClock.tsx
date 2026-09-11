@@ -37,7 +37,7 @@ export const LiveClock: React.FC = () => {
         <div className="space-y-2">
           <div className="flex items-center gap-3 text-xs sm:text-sm text-neutral-400 font-mono font-semibold tracking-wide uppercase">
             <span className="flex items-center gap-1.5 bg-[#111111] px-3 py-1 rounded-full border border-[#222222]">
-              <Calendar className="w-3.5 h-3.5 text-blue-400" />
+              <Calendar className="w-3.5 h-3.5 text-white" />
               <span>
                 {dayName}, {dateStr}
               </span>
@@ -89,15 +89,15 @@ export const LiveClock: React.FC = () => {
           {notificationPermission !== 'granted' ? (
             <button
               onClick={() => requestNotificationPermission()}
-              className="px-3.5 py-2 text-xs font-mono font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+              className="px-3.5 py-2 text-xs font-mono font-bold bg-[#111111] hover:bg-[#222222] text-white border border-[#333333] rounded-xl flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
               title="Click to enable desktop browser notifications for alarms"
             >
-              <Bell className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
+              <Bell className="w-3.5 h-3.5 text-white animate-bounce" />
               <span>ENABLE NOTIFS</span>
             </button>
           ) : (
-            <div className="px-3.5 py-1.5 text-[11px] font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/30 rounded-full flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+            <div className="px-3.5 py-1.5 text-[11px] font-mono font-bold bg-[#111111] text-white border border-[#333333] rounded-full flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-white" />
               <span>NOTIFICATIONS ACTIVE</span>
             </div>
           )}

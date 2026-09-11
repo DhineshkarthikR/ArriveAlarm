@@ -71,8 +71,8 @@ export const LocationMap: React.FC<LocationMapProps> = ({
         type: 'fill',
         source: 'arrival-geofence-source',
         paint: {
-          'fill-color': '#6366f1',
-          'fill-opacity': 0.18,
+          'fill-color': '#FFFFFF',
+          'fill-opacity': 0.1,
         },
       });
 
@@ -81,8 +81,8 @@ export const LocationMap: React.FC<LocationMapProps> = ({
         type: 'line',
         source: 'arrival-geofence-source',
         paint: {
-          'line-color': '#4f46e5',
-          'line-width': 2.5,
+          'line-color': '#FFFFFF',
+          'line-width': 2,
         },
       });
     }
@@ -105,7 +105,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
           type: 'fill',
           source: 'early-alert-source',
           paint: {
-            'fill-color': '#f59e0b',
+            'fill-color': '#A3A3A3',
             'fill-opacity': 0.08,
           },
         });
@@ -115,7 +115,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
           type: 'line',
           source: 'early-alert-source',
           paint: {
-            'line-color': '#f59e0b',
+            'line-color': '#A3A3A3',
             'line-width': 1.5,
             'line-dasharray': [3, 2],
           },
@@ -223,10 +223,10 @@ export const LocationMap: React.FC<LocationMapProps> = ({
       const el = document.createElement('div');
       el.className = 'custom-destination-marker flex flex-col items-center cursor-pointer transform -translate-y-1/2 group';
       el.innerHTML = `
-        <div class="bg-indigo-600 text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-lg border border-white whitespace-nowrap mb-1">
+        <div class="bg-black text-white font-extrabold text-[10px] px-2 py-0.5 rounded-full shadow-lg border border-[#333333] whitespace-nowrap mb-1">
           📍 ${destinationName}
         </div>
-        <div class="w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-xl border-2 border-white transform transition-transform group-hover:scale-110">
+        <div class="w-8 h-8 bg-white text-black rounded-full flex items-center justify-center shadow-xl border-2 border-[#1A1A1A] transform transition-transform group-hover:scale-110">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
       `;
@@ -265,9 +265,9 @@ export const LocationMap: React.FC<LocationMapProps> = ({
         const el = document.createElement('div');
         el.className = 'custom-user-marker relative flex items-center justify-center';
         el.innerHTML = `
-          <div class="absolute w-8 h-8 bg-sky-500/30 rounded-full animate-ping"></div>
-          <div class="w-6 h-6 bg-sky-500 text-white rounded-full flex items-center justify-center shadow-lg border-2 border-white text-[10px] font-bold">
-            🔵
+          <div class="absolute w-8 h-8 bg-white/30 rounded-full animate-ping"></div>
+          <div class="w-6 h-6 bg-white text-black rounded-full flex items-center justify-center shadow-lg border-2 border-black text-[10px] font-bold">
+            ⬤
           </div>
         `;
 
@@ -295,11 +295,11 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     <div className="relative w-full h-full min-h-[350px] sm:min-h-[420px] rounded-3xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 group">
       {/* Missing API Key Developer Notification Banner */}
       {!hasConfiguredKey && (
-        <div className="absolute top-3 left-3 right-3 z-30 bg-amber-950/90 text-amber-100 border border-amber-500/50 rounded-2xl p-2.5 px-3.5 shadow-xl backdrop-blur-md text-xs flex items-center justify-between gap-2">
+        <div className="absolute top-3 left-3 right-3 z-30 bg-[#111111] text-white border border-[#333333] rounded-2xl p-2.5 px-3.5 shadow-xl text-xs flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+            <AlertTriangle className="w-4 h-4 text-white shrink-0" />
             <span>
-              <strong>MapTiler API Key Missing:</strong> Add <code className="bg-amber-900/60 px-1 py-0.5 rounded text-[11px]">VITE_MAPTILER_API_KEY</code> to <code className="bg-amber-900/60 px-1 py-0.5 rounded text-[11px]">.env</code> for MapTiler tiles.
+              <strong>MapTiler API Key Missing:</strong> Add <code className="bg-[#222222] px-1 py-0.5 rounded text-[11px]">VITE_MAPTILER_API_KEY</code> to <code className="bg-[#222222] px-1 py-0.5 rounded text-[11px]">.env</code> for MapTiler tiles.
             </span>
           </div>
         </div>
@@ -307,9 +307,9 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
       {/* Loading state indicator */}
       {!isMapLoaded && !mapError && (
-        <div className="absolute inset-0 z-20 bg-slate-100/90 dark:bg-slate-900/90 flex flex-col items-center justify-center gap-3 backdrop-blur-xs">
-          <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+        <div className="absolute inset-0 z-20 bg-black/90 flex flex-col items-center justify-center gap-3">
+          <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-semibold text-[#A3A3A3]">
             Initializing MapTiler Vector Map...
           </span>
         </div>
@@ -317,9 +317,9 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
       {/* Error state indicator */}
       {mapError && (
-        <div className="absolute inset-0 z-20 bg-slate-100 dark:bg-slate-900 flex flex-col items-center justify-center p-6 text-center space-y-3">
-          <AlertTriangle className="w-8 h-8 text-rose-500" />
-          <p className="text-xs text-rose-600 dark:text-rose-400 font-semibold">{mapError}</p>
+        <div className="absolute inset-0 z-20 bg-black flex flex-col items-center justify-center p-6 text-center space-y-3">
+          <AlertTriangle className="w-8 h-8 text-white" />
+          <p className="text-xs text-[#A3A3A3] font-semibold">{mapError}</p>
         </div>
       )}
 
@@ -330,14 +330,14 @@ export const LocationMap: React.FC<LocationMapProps> = ({
       <div className="absolute top-3 right-3 z-20 flex flex-col gap-1.5">
         <button
           onClick={handleZoomIn}
-          className="w-9 h-9 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl shadow-md border border-slate-200/80 dark:border-slate-700/80 backdrop-blur-md flex items-center justify-center transition-all"
+          className="w-9 h-9 bg-black hover:bg-[#111111] text-white rounded-xl shadow-md border border-[#333333] flex items-center justify-center transition-all"
           title="Zoom In"
         >
           <Plus className="w-4 h-4" />
         </button>
         <button
           onClick={handleZoomOut}
-          className="w-9 h-9 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-xl shadow-md border border-slate-200/80 dark:border-slate-700/80 backdrop-blur-md flex items-center justify-center transition-all"
+          className="w-9 h-9 bg-black hover:bg-[#111111] text-white rounded-xl shadow-md border border-[#333333] flex items-center justify-center transition-all"
           title="Zoom Out"
         >
           <Minus className="w-4 h-4" />
@@ -346,7 +346,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
         {onUseCurrentLocation && (
           <button
             onClick={onUseCurrentLocation}
-            className="w-9 h-9 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md flex items-center justify-center transition-all mt-1"
+            className="w-9 h-9 bg-white hover:bg-neutral-200 text-black rounded-xl shadow-md flex items-center justify-center transition-all mt-1"
             title="◎ Use My Current Location"
           >
             <Locate className="w-4 h-4" />
@@ -358,8 +358,8 @@ export const LocationMap: React.FC<LocationMapProps> = ({
             onClick={() => onToggleFollowUser(!followUser)}
             className={`w-9 h-9 rounded-xl shadow-md flex items-center justify-center transition-all border ${
               followUser
-                ? 'bg-emerald-500 text-white border-emerald-400'
-                : 'bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                ? 'bg-white text-black border-white'
+                : 'bg-black text-[#A3A3A3] border-[#333333]'
             }`}
             title="Follow My Location"
           >
@@ -369,22 +369,22 @@ export const LocationMap: React.FC<LocationMapProps> = ({
       </div>
 
       {/* Map Legend Overlay */}
-      <div className="absolute bottom-3 left-3 z-20 bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-md rounded-2xl p-2.5 px-3 text-[11px] shadow-lg flex flex-wrap items-center gap-3">
-        <span className="flex items-center gap-1.5 font-semibold text-indigo-600 dark:text-indigo-400">
-          <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" />
+      <div className="absolute bottom-3 left-3 z-20 bg-black border border-[#333333] rounded-2xl p-2.5 px-3 text-[11px] shadow-lg flex flex-wrap items-center gap-3">
+        <span className="flex items-center gap-1.5 font-semibold text-white">
+          <span className="w-2.5 h-2.5 rounded-full bg-white" />
           <span>Arrival Zone ({radius >= 1000 ? `${radius / 1000}km` : `${radius}m`})</span>
         </span>
 
         {earlyAlertEnabled && (
-          <span className="flex items-center gap-1.5 font-semibold text-amber-600 dark:text-amber-400">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500 border border-amber-400 border-dashed" />
+          <span className="flex items-center gap-1.5 font-semibold text-[#A3A3A3]">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#A3A3A3] border border-[#A3A3A3] border-dashed" />
             <span>Early Alert ({earlyAlertDistance >= 1000 ? `${earlyAlertDistance / 1000}km` : `${earlyAlertDistance}m`})</span>
           </span>
         )}
 
         {currentLocation && (
-          <span className="flex items-center gap-1 font-semibold text-sky-500">
-            <span>🔵</span>
+          <span className="flex items-center gap-1 font-semibold text-white">
+            <span>⬤</span>
             <span>Your Location</span>
           </span>
         )}

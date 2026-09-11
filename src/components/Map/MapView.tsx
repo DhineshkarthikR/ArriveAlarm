@@ -25,7 +25,7 @@ export const MapView: React.FC<MapViewProps> = (props) => {
     <Suspense
       fallback={
         <div className="w-full h-full min-h-[350px] sm:min-h-[420px] rounded-2xl border border-[#222222] bg-[#0A0A0A] flex flex-col items-center justify-center p-6 text-center space-y-3">
-          <div className="w-7 h-7 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-7 h-7 border-2 border-white border-t-transparent rounded-full animate-spin" />
           <span className="text-xs font-mono text-zinc-400">Loading Map Engine...</span>
         </div>
       }

@@ -220,7 +220,7 @@ export const CreateAlarm: React.FC = () => {
                   isCurrent
                     ? 'bg-white/5 text-white border-[#333333]'
                     : isDone
-                    ? 'bg-[#0a0a0a] text-green-500 border-green-500/20'
+                    ? 'bg-[#0A0A0A] text-white border-[#333333]'
                     : 'bg-[#0a0a0a] text-[#555555] border-[#1a1a1a]'
                 }`}
               >
@@ -543,8 +543,8 @@ export const CreateAlarm: React.FC = () => {
               </div>
 
               {earlyAlertEnabled && (
-                <div className="bg-amber-500/5 border border-amber-500/10 rounded-md p-3 space-y-2">
-                  <label className="text-xs font-medium text-amber-400/80">
+                <div className="bg-[#111111] border border-[#333333] rounded-md p-3 space-y-2">
+                  <label className="text-xs font-medium text-[#A3A3A3]">
                     Early Alert Distance
                   </label>
                   <div className="grid grid-cols-4 gap-2">
@@ -555,7 +555,7 @@ export const CreateAlarm: React.FC = () => {
                         onClick={() => setEarlyAlertDistance(d)}
                         className={`py-1.5 text-xs font-medium rounded-md border transition-colors ${
                           earlyAlertDistance === d
-                            ? 'bg-amber-500 text-black border-amber-500'
+                            ? 'bg-white text-black border-white'
                             : 'bg-black border-[#1a1a1a] text-[#888888]'
                         }`}
                       >

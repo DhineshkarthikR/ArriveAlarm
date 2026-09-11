@@ -20,23 +20,23 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 animate-fadeIn">
+      <div className="bg-[#0A0A0A] border border-[#222222] rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative overflow-hidden">
         {/* Step indicator dots */}
         <div className="flex items-center justify-center gap-2 mb-6">
           <div
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              step === 1 ? 'w-8 bg-indigo-600' : 'w-2 bg-slate-200 dark:bg-slate-800'
+              step === 1 ? 'w-8 bg-white' : 'w-2 bg-[#333333]'
             }`}
           />
           <div
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              step === 2 ? 'w-8 bg-indigo-600' : 'w-2 bg-slate-200 dark:bg-slate-800'
+              step === 2 ? 'w-8 bg-white' : 'w-2 bg-[#333333]'
             }`}
           />
           <div
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              step === 3 ? 'w-8 bg-indigo-600' : 'w-2 bg-slate-200 dark:bg-slate-800'
+              step === 3 ? 'w-8 bg-white' : 'w-2 bg-[#333333]'
             }`}
           />
         </div>
@@ -44,13 +44,13 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
         {/* Step 1 */}
         {step === 1 && (
           <div className="text-center py-4 space-y-4">
-            <div className="w-16 h-16 rounded-3xl bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-100 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-16 h-16 rounded-3xl bg-[#111111] border border-[#333333] text-white flex items-center justify-center mx-auto shadow-sm">
               <MapPin className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-xl font-bold text-white">
               Never miss your destination
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm text-[#A3A3A3] leading-relaxed">
               Set any location on an interactive map and get real-time proximity tracking wherever you travel.
             </p>
           </div>
@@ -59,13 +59,13 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
         {/* Step 2 */}
         {step === 2 && (
           <div className="text-center py-4 space-y-4">
-            <div className="w-16 h-16 rounded-3xl bg-blue-50 dark:bg-blue-950/80 border border-blue-100 dark:border-blue-900 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-16 h-16 rounded-3xl bg-[#111111] border border-[#333333] text-white flex items-center justify-center mx-auto shadow-sm">
               <Radio className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-xl font-bold text-white">
               Set your alert radius
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm text-[#A3A3A3] leading-relaxed">
               Choose how close you need to be—from 50 meters to custom distances. Optionally configure early distance warnings!
             </p>
           </div>
@@ -74,13 +74,13 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
         {/* Step 3 */}
         {step === 3 && (
           <div className="text-center py-4 space-y-4">
-            <div className="w-16 h-16 rounded-3xl bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-100 dark:border-emerald-900 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-16 h-16 rounded-3xl bg-[#111111] border border-[#333333] text-white flex items-center justify-center mx-auto shadow-sm">
               <Bell className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h2 className="text-xl font-bold text-white">
               Start tracking & relax
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            <p className="text-sm text-[#A3A3A3] leading-relaxed">
               ArriveAlarm monitors your GPS location and triggers audio tone, vibration, and browser notification upon arrival.
             </p>
           </div>
@@ -88,7 +88,7 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
 
         <button
           onClick={handleNext}
-          className="w-full mt-6 py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium rounded-2xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group text-sm"
+          className="w-full mt-6 py-3.5 px-4 bg-white hover:bg-neutral-200 active:bg-neutral-300 text-black font-medium rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 group text-sm"
         >
           {step === 3 ? (
             <>

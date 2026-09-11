@@ -48,7 +48,7 @@ export const ActiveAlarm: React.FC = () => {
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
             <h1 className="text-2xl font-bold text-white tracking-tight">
               Tracking
             </h1>
@@ -69,7 +69,7 @@ export const ActiveAlarm: React.FC = () => {
 
       {/* GPS Error */}
       {gpsError && (
-        <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-md text-xs flex items-center gap-2">
+        <div className="p-3 bg-[#111111] border border-[#333333] text-white rounded-md text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{gpsError}</span>
         </div>
@@ -79,8 +79,8 @@ export const ActiveAlarm: React.FC = () => {
       <div className="bg-[#0a0a0a] rounded-md border border-[#1a1a1a] p-5 sm:p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
           <div className="space-y-1">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium bg-green-500/10 text-green-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium bg-[#111111] text-white border border-[#333333]">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               GPS TRACKING
             </span>
 

@@ -62,8 +62,8 @@ export const SoundSelector: React.FC<SoundSelectorProps> = ({
       {/* Sound Type Selection */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100">
-            <BellRing className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+          <label className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white">
+            <BellRing className="w-4 h-4 text-white" />
             <span>Alarm Tone ({selectedSoundObj.label})</span>
           </label>
 
@@ -72,8 +72,8 @@ export const SoundSelector: React.FC<SoundSelectorProps> = ({
             onClick={handleTest}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all active:scale-95 ${
               isPlayingTest
-                ? 'bg-rose-500 text-white border-rose-500 animate-pulse'
-                : 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-900 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100'
+                ? 'bg-white text-black border-white animate-pulse'
+                : 'bg-[#111111] border-[#333333] text-white hover:bg-[#1A1A1A]'
             }`}
           >
             {isPlayingTest ? (
@@ -93,7 +93,7 @@ export const SoundSelector: React.FC<SoundSelectorProps> = ({
         <select
           value={sound}
           onChange={(e) => onChangeSound(e.target.value as AlarmSoundType)}
-          className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-xs sm:text-sm font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-xs"
+          className="w-full px-3.5 py-2.5 bg-[#080808] border border-[#333333] rounded-xl text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-white focus:ring-1 focus:ring-white"
         >
           {SOUND_OPTIONS.map((opt) => (
             <option key={opt.id} value={opt.id}>
@@ -105,12 +105,12 @@ export const SoundSelector: React.FC<SoundSelectorProps> = ({
 
       {/* Volume Slider */}
       <div className="space-y-1.5">
-        <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+        <div className="flex items-center justify-between text-xs text-[#A3A3A3]">
           <span className="flex items-center gap-1.5 font-medium">
-            <Volume2 className="w-3.5 h-3.5 text-slate-400" />
+            <Volume2 className="w-3.5 h-3.5 text-[#A3A3A3]" />
             <span>Volume</span>
           </span>
-          <span className="font-semibold text-slate-800 dark:text-slate-200">{volume}%</span>
+          <span className="font-semibold text-white">{volume}%</span>
         </div>
         <input
           type="range"
@@ -118,15 +118,15 @@ export const SoundSelector: React.FC<SoundSelectorProps> = ({
           max="100"
           value={volume}
           onChange={(e) => onChangeVolume(parseInt(e.target.value, 10))}
-          className="w-full accent-indigo-600 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg cursor-pointer"
+          className="w-full accent-white h-1.5 bg-[#333333] rounded-lg cursor-pointer"
         />
       </div>
 
       {/* Alarm Duration (Optional for Location Alarms) */}
       {durationSeconds !== undefined && onChangeDuration && (
         <div className="space-y-2">
-          <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-            <Clock className="w-3.5 h-3.5 text-slate-400" />
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-[#A3A3A3]">
+            <Clock className="w-3.5 h-3.5 text-[#A3A3A3]" />
             <span>Alarm Duration</span>
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -139,8 +139,8 @@ export const SoundSelector: React.FC<SoundSelectorProps> = ({
                   onClick={() => onChangeDuration(opt.value)}
                   className={`py-1.5 px-2 rounded-xl text-xs font-semibold border transition-all ${
                     isSelected
-                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-xs'
-                      : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                      ? 'bg-white text-black border-white shadow-xs'
+                      : 'bg-[#080808] border-[#333333] text-[#A3A3A3] hover:text-white'
                   }`}
                 >
                   {opt.label}

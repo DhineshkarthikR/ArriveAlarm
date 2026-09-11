@@ -25,32 +25,26 @@ export const ToastContainer: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto p-4 rounded-2xl border shadow-xl backdrop-blur-md flex items-start gap-3 transition-all duration-300 animate-slide-up ${
-              isSuccess
-                ? 'bg-slate-900/95 border-emerald-500/50 text-white dark:bg-slate-900/95 dark:border-emerald-500/50'
-                : isError
-                ? 'bg-slate-900/95 border-rose-500/50 text-white dark:bg-slate-900/95 dark:border-rose-500/50'
-                : 'bg-slate-900/95 border-indigo-500/50 text-white dark:bg-slate-900/95 dark:border-indigo-500/50'
-            }`}
+            className={`pointer-events-auto p-4 rounded-2xl border shadow-xl flex items-start gap-3 transition-all duration-300 animate-slide-up bg-[#111111] border-[#333333] text-white`}
           >
             <div className="shrink-0 pt-0.5">
               {isSuccess ? (
-                <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                <CheckCircle2 className="w-5 h-5 text-white" />
               ) : isError ? (
-                <AlertCircle className="w-5 h-5 text-rose-400" />
+                <AlertCircle className="w-5 h-5 text-white" />
               ) : (
-                <Info className="w-5 h-5 text-indigo-400" />
+                <Info className="w-5 h-5 text-white" />
               )}
             </div>
 
             <div className="flex-1 space-y-0.5">
               <h4 className="text-xs font-bold tracking-tight text-white">{toast.title}</h4>
-              {toast.message && <p className="text-[11px] text-slate-300 leading-snug">{toast.message}</p>}
+              {toast.message && <p className="text-[11px] text-[#A3A3A3] leading-snug">{toast.message}</p>}
             </div>
 
             <button
               onClick={() => onDismiss(toast.id)}
-              className="text-slate-400 hover:text-white p-0.5 rounded-lg transition-colors shrink-0"
+              className="text-[#A3A3A3] hover:text-white p-0.5 rounded-lg transition-colors shrink-0"
             >
               <X className="w-3.5 h-3.5" />
             </button>

@@ -30,8 +30,8 @@ export const ActiveAlarmCard: React.FC<ActiveAlarmCardProps> = ({
     <div className="bg-[#0a0a0a] rounded-md p-5 border border-[#1a1a1a]">
       {/* Header */}
       <div className="flex items-center justify-between gap-2 mb-4">
-        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium bg-green-500/10 text-green-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium bg-[#111111] text-white border border-[#333333]">
+          <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
           <span>TRACKING</span>
         </div>
         <span className="text-[11px] text-[#555555]">
