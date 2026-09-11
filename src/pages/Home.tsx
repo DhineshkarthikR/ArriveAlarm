@@ -4,19 +4,16 @@ import {
   MapPin,
   Bell,
   Star,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
   Navigation,
   Compass,
   Radio,
+  ChevronRight,
 } from 'lucide-react';
 import { useAlarm } from '../context/AlarmContext';
 import { LiveClock } from '../components/Clock/LiveClock';
 import { QuickAlarmButtons } from '../components/Clock/QuickAlarmButtons';
 import { TimeAlarmList } from '../components/Alarm/TimeAlarmList';
 import { ActiveAlarmCard } from '../components/Alarm/ActiveAlarmCard';
-import { Card } from '../components/Common/Card';
 import { BannerLimitation } from '../components/Common/BannerLimitation';
 
 export const Home: React.FC = () => {
@@ -26,143 +23,173 @@ export const Home: React.FC = () => {
     activeAlarm,
     currentDistance,
     initialDistance,
-    history,
     savedPlaces,
     stopAlarm,
   } = useAlarm();
 
-  // Determine greeting based on local browser time
+  // Determine greeting based on local time
   const hour = new Date().getHours();
   const greeting =
-    hour < 12 ? 'Good morning 👋' : hour < 18 ? 'Good afternoon 👋' : 'Good evening 👋';
+    hour < 12 ? 'MORNING COMMUTE' : hour < 18 ? 'AFTERNOON TRANSIT' : 'EVENING NAVIGATION';
 
   return (
-    <div className="space-y-8 animate-fadeIn pb-16">
+    <div className="space-y-12 animate-slide-up pb-16">
       <BannerLimitation />
 
-      {/* Hero Welcome & Journey Visual Banner */}
-      <div className="bg-gradient-to-r from-indigo-700 via-indigo-800 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-2xl relative overflow-hidden border border-indigo-500/30">
-        {/* Subtle dynamic background ambient glows */}
-        <div className="absolute -top-20 -right-20 w-72 h-72 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+      {/* ================= STITCH HERO SECTION ================= */}
+      <section className="relative overflow-hidden rounded-3xl hud-card p-6 sm:p-12 border border-cyan-500/20 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+        {/* Glow ambient background effects */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          {/* Left Hero Messaging */}
-          <div className="lg:col-span-7 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+          {/* Left Column: Hero Typography & Primary Actions */}
+          <div className="lg:col-span-7 space-y-6">
             <div className="flex items-center gap-2">
-              <span className="inline-block px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-xs font-bold text-indigo-200">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                 {greeting}
               </span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/20 backdrop-blur-md rounded-full text-xs font-semibold text-indigo-300 border border-indigo-400/30">
-                <Navigation className="w-3 h-3 text-indigo-400" />
-                <span>Smart Alarm Engine</span>
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-mono text-slate-400 border border-slate-800 bg-slate-950/60">
+                <Radio className="w-3 h-3 text-cyan-400" />
+                GPS RTK ACTIVE
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight text-white">
-              Arrive. Relax. <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-200 via-blue-200 to-indigo-400">
-                Never Miss Your Stop.
+            {/* STITCH MANDATED HERO HEADLINE */}
+            <h1 className="text-4xl sm:text-6xl font-black font-mono tracking-tight leading-[1.05] text-white">
+              ARRIVE. <br />
+              <span className="text-cyan-400 text-cyan-glow">RELAX.</span> <br />
+              NEVER MISS <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-300">
+                YOUR STOP.
               </span>
             </h1>
 
-            <p className="text-indigo-100/90 text-sm sm:text-base leading-relaxed max-w-xl">
-              Set location arrival geofences or precise time alarms. Arrive Alarm triggers loud audio tones, vibration, and browser alerts the exact moment you reach your destination.
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl font-sans">
+              Set your destination and we&apos;ll alert you when you&apos;re almost there. Perfect for commuting, traveling, sleeping on transit, or long journeys.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            {/* Hero CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               <button
                 onClick={() => setActivePage('create')}
-                className="py-3.5 px-6 bg-white text-indigo-950 hover:bg-slate-100 font-extrabold text-xs sm:text-sm rounded-2xl shadow-xl transition-all flex items-center gap-2 transform active:scale-95 cursor-pointer"
+                className="py-4 px-8 bg-cyan-400 hover:bg-cyan-300 active:bg-cyan-500 text-slate-950 font-mono font-black text-sm rounded-2xl shadow-[0_0_25px_rgba(0,242,255,0.4)] transition-all flex items-center gap-3 transform active:scale-95 cursor-pointer"
               >
-                <PlusCircle className="w-4.5 h-4.5 text-indigo-600" />
-                <span>+ Create New Alarm</span>
+                <PlusCircle className="w-5 h-5 text-slate-950" />
+                <span>CREATE ARRIVAL ALARM</span>
               </button>
 
               <button
-                onClick={() => setActivePage('saved')}
-                className="py-3.5 px-5 bg-indigo-900/60 hover:bg-indigo-900 text-white font-bold text-xs sm:text-sm rounded-2xl border border-indigo-400/30 backdrop-blur-md transition-all flex items-center gap-2 cursor-pointer"
+                onClick={() => setActivePage('active')}
+                className="py-4 px-6 bg-slate-900/90 hover:bg-slate-800 text-white font-mono font-bold text-sm rounded-2xl border border-cyan-500/30 backdrop-blur-md transition-all flex items-center gap-2 cursor-pointer hover:border-cyan-400"
               >
-                <Star className="w-4 h-4 text-amber-300" />
-                <span>Saved Places ({savedPlaces.length})</span>
+                <Radio className="w-4 h-4 text-cyan-400" />
+                <span>VIEW MY ALARMS</span>
               </button>
+            </div>
+
+            {/* Metric Counters */}
+            <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 max-w-lg">
+              <div>
+                <p className="text-[11px] font-mono uppercase text-slate-400">Geofence</p>
+                <p className="text-lg font-black font-mono text-cyan-400 mt-0.5">&lt; 15m</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-mono uppercase text-slate-400">Accuracy</p>
+                <p className="text-lg font-black font-mono text-cyan-400 mt-0.5">99.9%</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-mono uppercase text-slate-400">Commutes</p>
+                <p className="text-lg font-black font-mono text-cyan-400 mt-0.5">1.2M+</p>
+              </div>
             </div>
           </div>
 
-          {/* Right Visual Representation: Location -> Journey -> Destination -> Alert */}
-          <div className="lg:col-span-5 bg-slate-950/60 backdrop-blur-xl border border-indigo-500/30 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-indigo-900/50 pb-3">
-              <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Compass className="w-4 h-4 text-indigo-400 animate-spin" />
-                <span>Visual Journey Flow</span>
+          {/* Right Column: Animated Vector Journey Visualization */}
+          <div className="lg:col-span-5 bg-slate-950/80 backdrop-blur-xl border border-cyan-500/30 rounded-3xl p-6 space-y-6 shadow-[0_0_30px_rgba(0,242,255,0.1)] relative overflow-hidden">
+            {/* Header Tag */}
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-2">
+                <Compass className="w-4 h-4 text-cyan-400 animate-spin" />
+                <span>JOURNEY VECTOR PIPELINE</span>
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                ACTIVE PIPELINE
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                LIVE HUD
               </span>
             </div>
 
-            <div className="grid grid-cols-4 gap-2 text-center relative">
-              {/* Journey Step 1 */}
-              <div className="space-y-1.5 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-900/80 border border-indigo-700 text-indigo-300 flex items-center justify-center shadow-md">
-                  <MapPin className="w-5 h-5 text-indigo-400" />
+            {/* Graphical Vector Route */}
+            <div className="py-4 space-y-6 relative">
+              {/* Point 1: Current Location */}
+              <div className="flex items-start gap-4">
+                <div className="relative flex flex-col items-center">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-400 flex items-center justify-center shadow-[0_0_15px_rgba(0,242,255,0.4)]">
+                    <MapPin className="w-4 h-4 text-cyan-400" />
+                  </div>
+                  <div className="w-0.5 h-12 bg-gradient-to-b from-cyan-400 via-blue-500 to-cyan-500 my-1 animate-pulse" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-200">Location</span>
-                <span className="text-[9px] text-slate-400">GPS Pin</span>
+                <div>
+                  <span className="text-[10px] font-mono uppercase text-cyan-400 tracking-wider">START WAYPOINT</span>
+                  <h4 className="text-sm font-bold text-white font-mono">CURRENT LOCATION</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">GPS Signal Lock • Transit Mode</p>
+                </div>
               </div>
 
-              {/* Journey Step 2 */}
-              <div className="space-y-1.5 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-2xl bg-blue-900/80 border border-blue-700 text-blue-300 flex items-center justify-center shadow-md">
-                  <Navigation className="w-5 h-5 text-blue-400" />
+              {/* Point 2: Destination & Pulsing Geofence */}
+              <div className="flex items-start gap-4">
+                <div className="relative flex flex-col items-center">
+                  <div className="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-400 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.4)] relative">
+                    <Navigation className="w-4 h-4 text-blue-300" />
+                    <div className="absolute inset-0 rounded-xl border border-blue-400 animate-ping opacity-50" />
+                  </div>
+                  <div className="w-0.5 h-12 bg-gradient-to-b from-blue-500 via-amber-500 to-rose-500 my-1" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-200">Journey</span>
-                <span className="text-[9px] text-slate-400">Tracking</span>
+                <div>
+                  <span className="text-[10px] font-mono uppercase text-blue-400 tracking-wider">TARGET DESTINATION</span>
+                  <h4 className="text-sm font-bold text-white font-mono">GEOFENCE RADIUS PERIMETER</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">500m Arrival Boundary • Sensor Active</p>
+                </div>
               </div>
 
-              {/* Journey Step 3 */}
-              <div className="space-y-1.5 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-2xl bg-amber-900/80 border border-amber-700 text-amber-300 flex items-center justify-center shadow-md">
-                  <Radio className="w-5 h-5 text-amber-400" />
+              {/* Point 3: Alert Trigger */}
+              <div className="flex items-start gap-4">
+                <div className="w-9 h-9 rounded-xl bg-rose-500/30 border border-rose-500 flex items-center justify-center shadow-[0_0_15px_rgba(244,63,94,0.5)] animate-bounce">
+                  <Bell className="w-4 h-4 text-rose-300" />
                 </div>
-                <span className="text-[11px] font-bold text-slate-200">Geofence</span>
-                <span className="text-[9px] text-slate-400">Radius</span>
+                <div>
+                  <span className="text-[10px] font-mono uppercase text-rose-400 tracking-wider">TRIGGER THRESHOLD</span>
+                  <h4 className="text-sm font-bold text-white font-mono">HIGH-FREQUENCY ALERT</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">Loud Audio Synth Tone + Haptic Vibe</p>
+                </div>
               </div>
+            </div>
 
-              {/* Journey Step 4 */}
-              <div className="space-y-1.5 flex flex-col items-center">
-                <div className="w-10 h-10 rounded-2xl bg-rose-900/80 border border-rose-700 text-rose-300 flex items-center justify-center shadow-md animate-bounce">
-                  <Bell className="w-5 h-5 text-rose-400" />
-                </div>
-                <span className="text-[11px] font-bold text-slate-200">Alert!</span>
-                <span className="text-[9px] text-slate-400">Loud Tone</span>
-              </div>
+            {/* Bottom Status bar inside graphic */}
+            <div className="bg-slate-900/90 rounded-2xl p-3 border border-slate-800 flex items-center justify-between text-xs font-mono">
+              <span className="text-slate-400">TELEMETRY PRESETS</span>
+              <span className="text-cyan-400 font-bold">100m – 5.0km</span>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Live Digital Clock Section */}
-      <section className="space-y-3">
-        <LiveClock />
       </section>
 
-      {/* Quick Alarm Presets */}
-      <section className="space-y-3">
-        <QuickAlarmButtons />
+      {/* ================= LIVE CLOCK & QUICK PRESETS ================= */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-7">
+          <LiveClock />
+        </div>
+        <div className="lg:col-span-5">
+          <QuickAlarmButtons />
+        </div>
       </section>
 
-      {/* Saved Time Alarms List */}
-      <section className="space-y-3">
-        <TimeAlarmList />
-      </section>
-
-      {/* Active Location Alarm Tracking Status */}
+      {/* ================= ACTIVE TRACKING STATUS ================= */}
       {isTracking && activeAlarm && (
-        <section className="space-y-3 pt-2">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-            Active Location Tracking Status
+        <section className="space-y-4">
+          <h2 className="text-lg font-mono font-bold text-white flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+            ACTIVE JOURNEY TELEMETRY
           </h2>
           <ActiveAlarmCard
             alarm={activeAlarm}
@@ -174,94 +201,98 @@ export const Home: React.FC = () => {
         </section>
       )}
 
-      {/* Quick Metrics & System Status Dashboard */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-        <Card className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-100 dark:border-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-            <Bell className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Arrival History</p>
-            <p className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-0.5">
-              {history.length} <span className="text-xs font-normal text-slate-400">arrivals</span>
-            </p>
-          </div>
-        </Card>
+      {/* ================= TIME ALARM LIST ================= */}
+      <section className="space-y-4">
+        <TimeAlarmList />
+      </section>
 
-        <Card
-          onClick={() => setActivePage('saved')}
-          className="flex items-center gap-4 group cursor-pointer"
-        >
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-            <Star className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Saved Places</p>
-            <p className="text-2xl font-black text-slate-900 dark:text-slate-100 mt-0.5">
-              {savedPlaces.length} <span className="text-xs font-normal text-slate-400">saved</span>
-            </p>
-          </div>
-        </Card>
-
-        <Card className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Engine Status</p>
-            <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Alarm Ticker Active</span>
-            </p>
-          </div>
-        </Card>
-      </div>
-
-      {/* Recent Arrival History Activity */}
-      <section className="space-y-4 pt-2">
+      {/* ================= SAVED PLACES & QUICK ACCESS ================= */}
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-            Recent Arrival History
+          <h2 className="text-xl font-mono font-bold text-white flex items-center gap-2">
+            <Star className="w-5 h-5 text-amber-400" />
+            <span>SAVED DESTINATIONS</span>
           </h2>
           <button
-            onClick={() => setActivePage('history')}
-            className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+            onClick={() => setActivePage('saved')}
+            className="text-xs font-mono font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 cursor-pointer"
           >
-            <span>View All</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>VIEW ALL</span>
+            <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {history.length === 0 ? (
-          <p className="text-xs text-slate-400 italic">No recent arrival history logs.</p>
+        {savedPlaces.length === 0 ? (
+          <div className="hud-card p-6 rounded-2xl text-center space-y-3">
+            <p className="text-xs font-mono text-slate-400">No saved places found.</p>
+            <button
+              onClick={() => setActivePage('create')}
+              className="px-4 py-2 bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 rounded-xl text-xs font-mono font-bold hover:bg-cyan-500/30 transition-all cursor-pointer"
+            >
+              + Save Your First Destination
+            </button>
+          </div>
         ) : (
-          <div className="space-y-2.5">
-            {history.slice(0, 3).map((item) => (
-              <Card key={item.id} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                    <MapPin className="w-5 h-5" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {savedPlaces.slice(0, 3).map((place) => (
+              <div
+                key={place.id}
+                onClick={() => setActivePage('create')}
+                className="hud-card p-5 rounded-2xl space-y-3 hover:border-cyan-400 transition-all cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <MapPin className="w-4.5 h-4.5" />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">
-                      {item.destinationName}
-                    </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Arrived within {item.radius} m • Duration: {item.durationMinutes} min
-                    </p>
-                  </div>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    Radius: {place.defaultRadius}m
+                  </span>
                 </div>
-                <span className="text-[11px] font-medium text-slate-400">
-                  {new Date(item.arrivedAt).toLocaleDateString([], {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </span>
-              </Card>
+                <div>
+                  <h4 className="font-mono font-bold text-sm text-white group-hover:text-cyan-300 transition-colors">
+                    {place.name}
+                  </h4>
+                  <p className="text-xs text-slate-400 truncate mt-0.5">{place.address}</p>
+                </div>
+              </div>
             ))}
           </div>
         )}
       </section>
+
+      {/* ================= HOW IT WORKS STEPPER ================= */}
+      <section className="hud-card rounded-3xl p-6 sm:p-10 space-y-6">
+        <h2 className="text-xl font-mono font-bold text-white text-center">
+          HOW ARRIVE ALARM WORKS
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
+            <span className="text-xs font-mono font-black text-cyan-400">STEP 01</span>
+            <h3 className="font-mono font-bold text-base text-white">Select Destination</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Search any location or tap on the map to pin your target station or arrival point.
+            </p>
+          </div>
+
+          <div className="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
+            <span className="text-xs font-mono font-black text-cyan-400">STEP 02</span>
+            <h3 className="font-mono font-bold text-base text-white">Set Geofence Radius</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Define your preferred wake-up boundary (from 100m up to 5.0 km) before arriving.
+            </p>
+          </div>
+
+          <div className="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 space-y-3">
+            <span className="text-xs font-mono font-black text-cyan-400">STEP 03</span>
+            <h3 className="font-mono font-bold text-base text-white">Arrive Fully Alerted</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Loud Web Audio tones, browser notifications, and vibration fire the moment you enter the radius.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
+

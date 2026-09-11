@@ -163,27 +163,30 @@ export const CreateAlarm: React.FC = () => {
     startAlarm(newAlarm);
   };
 
+  // Stepped wizard step state (1: Destination, 2: Radius, 3: Sound & Config, 4: Confirmation)
+  const [currentStep, setCurrentStep] = useState<number>(1);
+
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
+    <div className="space-y-6 animate-slide-up pb-12">
       {/* Title & Mode Switcher */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hud-card p-6 rounded-3xl border border-cyan-500/20">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-            Create New Alarm
+          <h1 className="text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
+            GUIDED ALARM SETUP
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Choose between Time Alarm (Clock) or Location Alarm (GPS Geofence).
+          <p className="text-xs sm:text-sm text-slate-400 font-sans mt-1">
+            Choose between Location Arrival Geofence (GPS) or Precise Time Alarm.
           </p>
         </div>
 
         {/* Tab Selection Switch */}
-        <div className="flex items-center bg-slate-200 dark:bg-slate-800/90 p-1 rounded-2xl border border-slate-300 dark:border-slate-700/80 shadow-inner">
+        <div className="flex items-center bg-slate-950/80 p-1.5 rounded-2xl border border-cyan-500/20">
           <button
             onClick={() => setActiveTab('time')}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 text-xs font-mono font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'time'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(0,242,255,0.4)]'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <AlarmClock className="w-4 h-4" />
@@ -192,10 +195,10 @@ export const CreateAlarm: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('location')}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 text-xs font-mono font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'location'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                ? 'bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(0,242,255,0.4)]'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <MapPin className="w-4 h-4" />
@@ -203,6 +206,36 @@ export const CreateAlarm: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Stepped Wizard Progress Indicator for Location Alarms */}
+      {activeTab === 'location' && (
+        <div className="grid grid-cols-4 gap-2 hud-card p-4 rounded-2xl border border-cyan-500/20">
+          {[
+            { num: 1, title: '01. DESTINATION' },
+            { num: 2, title: '02. RADIUS' },
+            { num: 3, title: '03. ALERT SOUND' },
+            { num: 4, title: '04. ACTIVATE' },
+          ].map((s) => {
+            const isDone = currentStep > s.num;
+            const isCurrent = currentStep === s.num;
+            return (
+              <button
+                key={s.num}
+                onClick={() => setCurrentStep(s.num)}
+                className={`py-2.5 px-3 rounded-xl text-[11px] font-mono font-bold transition-all text-center border cursor-pointer ${
+                  isCurrent
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-[0_0_12px_rgba(0,242,255,0.3)]'
+                    : isDone
+                    ? 'bg-slate-900/80 text-emerald-400 border-emerald-500/30'
+                    : 'bg-slate-900/40 text-slate-500 border-slate-800'
+                }`}
+              >
+                {s.title}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* ================= TIME ALARM TAB ================= */}
       {activeTab === 'time' && (

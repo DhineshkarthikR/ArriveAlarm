@@ -25,53 +25,54 @@ export const QuickAlarmButtons: React.FC = () => {
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-        <Zap className="w-3.5 h-3.5 text-amber-500" />
-        <span>Quick Set Alarms</span>
+    <div className="space-y-3">
+      <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
+        <Zap className="w-3.5 h-3.5 text-cyan-400" />
+        <span>QUICK ALARM PRESETS</span>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
         <button
           onClick={() => quickAddAlarm(5, 'Timer +5m')}
-          className="py-2.5 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95"
+          className="py-3 px-3 hud-card hover:border-cyan-400 rounded-2xl text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
         >
-          <Clock className="w-3.5 h-3.5 text-indigo-500" />
-          <span>+5 Min</span>
+          <Clock className="w-3.5 h-3.5 text-cyan-400" />
+          <span>+5 MIN</span>
         </button>
 
         <button
           onClick={() => quickAddAlarm(10, 'Timer +10m')}
-          className="py-2.5 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95"
+          className="py-3 px-3 hud-card hover:border-cyan-400 rounded-2xl text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
         >
-          <Clock className="w-3.5 h-3.5 text-indigo-500" />
-          <span>+10 Min</span>
+          <Clock className="w-3.5 h-3.5 text-cyan-400" />
+          <span>+10 MIN</span>
         </button>
 
         <button
           onClick={() => quickAddAlarm(30, 'Timer +30m')}
-          className="py-2.5 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95"
+          className="py-3 px-3 hud-card hover:border-cyan-400 rounded-2xl text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
         >
-          <Clock className="w-3.5 h-3.5 text-indigo-500" />
-          <span>+30 Min</span>
+          <Clock className="w-3.5 h-3.5 text-cyan-400" />
+          <span>+30 MIN</span>
         </button>
 
         <button
           onClick={() => quickAddAlarm(60, 'Timer +1 Hour')}
-          className="py-2.5 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5 active:scale-95"
+          className="py-3 px-3 hud-card hover:border-cyan-400 rounded-2xl text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
         >
-          <Clock className="w-3.5 h-3.5 text-indigo-500" />
-          <span>+1 Hour</span>
+          <Clock className="w-3.5 h-3.5 text-cyan-400" />
+          <span>+1 HOUR</span>
         </button>
 
         <button
           onClick={handleTomorrowMorning}
-          className="col-span-2 sm:col-span-1 py-2.5 px-3 bg-amber-500/10 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-700/50 hover:bg-amber-500/20 rounded-2xl text-xs font-semibold text-amber-800 dark:text-amber-200 shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95"
+          className="col-span-2 sm:col-span-1 py-3 px-3 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 rounded-2xl text-xs font-mono font-bold text-amber-300 transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
         >
-          <Sun className="w-3.5 h-3.5 text-amber-500" />
-          <span>Tomorrow 7 AM</span>
+          <Sun className="w-3.5 h-3.5 text-amber-400" />
+          <span>7 AM</span>
         </button>
       </div>
     </div>
   );
 };
+

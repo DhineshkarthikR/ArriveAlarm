@@ -37,13 +37,19 @@ const MainContent: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-[#070b14] bg-grid-pattern text-slate-100 relative overflow-x-hidden">
+      {/* Ambient Radial Glowing Orbs */}
+      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-glow" />
+      <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+      {/* Floating Header */}
       <Header />
 
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
+      {/* Main Page Area */}
+      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-24 md:pb-12">
         <Sidebar />
 
-        <main className="flex-1 p-4 sm:p-6 md:p-8 max-w-full overflow-hidden">
+        <main className="w-full">
           {activePage === 'home' && <Home />}
           {activePage === 'create' && <CreateAlarm />}
           {activePage === 'active' && <ActiveAlarm />}
