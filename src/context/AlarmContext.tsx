@@ -22,6 +22,8 @@ import {
   saveTimeAlarms,
   saveUserSettings,
 } from '../utils/storage';
+import { ToastContainer } from '../components/Common/Toast';
+import type { ToastMessage } from '../components/Common/Toast';
 
 interface AlarmContextType {
   // Live Clock & User Settings
@@ -31,6 +33,11 @@ interface AlarmContextType {
   updateSettings: (newSettings: Partial<UserSettings>) => void;
   notificationPermission: NotificationPermission;
   requestNotificationPermission: () => Promise<NotificationPermission>;
+
+  // Toast feedback
+  toasts: ToastMessage[];
+  showToast: (title: string, message?: string, type?: 'success' | 'error' | 'info') => void;
+  dismissToast: (id: string) => void;
 
   // Time Alarms (Multi-alarm management)
   timeAlarms: TimeAlarm[];
@@ -85,6 +92,21 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>(
     typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'default'
   );
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  // Toast helper
+  const showToast = (title: string, message?: string, type: 'success' | 'error' | 'info' = 'success') => {
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+    const newToast: ToastMessage = { id, title, message, type };
+    setToasts((prev) => [...prev.slice(-3), newToast]); // keep max 4 toasts
+    setTimeout(() => {
+      dismissToast(id);
+    }, 4000);
+  };
+
+  const dismissToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   // Time Alarms state
   const [timeAlarms, setTimeAlarmsState] = useState<TimeAlarm[]>(() => {
@@ -127,11 +149,13 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setTimeFormat = (format: '12h' | '24h') => {
     const updated = saveUserSettings({ timeFormat: format });
     setUserSettingsState(updated);
+    showToast(`Time Format Updated`, `Switched clock format to ${format.toUpperCase()}`, 'info');
   };
 
   const updateSettings = (newSettings: Partial<UserSettings>) => {
     const updated = saveUserSettings(newSettings);
     setUserSettingsState(updated);
+    showToast('Settings Saved', 'Your preferences have been updated', 'success');
   };
 
   // Request browser notification permission
@@ -139,6 +163,11 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (typeof window !== 'undefined' && 'Notification' in window) {
       const perm = await Notification.requestPermission();
       setNotificationPermission(perm);
+      if (perm === 'granted') {
+        showToast('Notifications Enabled', 'You will receive browser alerts when alarms trigger', 'success');
+      } else {
+        showToast('Notifications Restricted', 'Browser notifications were denied or dismissed', 'error');
+      }
       return perm;
     }
     return 'denied';
@@ -165,6 +194,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const updated = [...timeAlarms, newAlarm];
     updateTimeAlarmsList(updated);
+    showToast('Alarm Created', `Scheduled for ${newAlarm.label || 'Time Alarm'}`, 'success');
     return newAlarm;
   };
 
@@ -203,28 +233,34 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return { ...merged, nextRingTimestamp };
     });
     updateTimeAlarmsList(updated);
+    showToast('Alarm Updated', 'Changes saved successfully', 'success');
   };
 
   // Delete Time Alarm
   const deleteTimeAlarm = (id: string) => {
+    const targetAlarm = timeAlarms.find((a) => a.id === id);
     const updated = timeAlarms.filter((a) => a.id !== id);
     if (ringingTimeAlarm?.id === id) {
       stopRingingTimeAlarm();
     }
     updateTimeAlarmsList(updated);
+    showToast('Alarm Removed', `Deleted ${targetAlarm?.label || 'alarm'}`, 'info');
   };
 
   // Toggle Time Alarm ON/OFF
   const toggleTimeAlarm = (id: string) => {
+    let toggledState = false;
     const updated = timeAlarms.map((alarm) => {
       if (alarm.id !== id) return alarm;
       const nextEnabled = !alarm.enabled;
+      toggledState = nextEnabled;
       const nextRingTimestamp = nextEnabled
         ? calculateNextRingTimestamp(alarm.hour, alarm.minute, alarm.repeat, alarm.customDays)
         : alarm.nextRingTimestamp;
       return { ...alarm, enabled: nextEnabled, status: 'idle' as const, nextRingTimestamp };
     });
     updateTimeAlarmsList(updated);
+    showToast(toggledState ? 'Alarm Enabled' : 'Alarm Disabled', '', toggledState ? 'success' : 'info');
   };
 
   // Snooze ringing Time Alarm
@@ -249,6 +285,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     updateTimeAlarmsList(updated);
     setRingingTimeAlarm(null);
+    showToast('Alarm Snoozed', `Will ring again in ${snoozeMins} minutes`, 'info');
   };
 
   // Stop ringing Time Alarm
@@ -279,6 +316,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
       updateTimeAlarmsList(updated);
       setRingingTimeAlarm(null);
+      showToast('Alarm Dismissed', 'Good morning!', 'success');
     }
   };
 
@@ -395,6 +433,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
 
     setActivePage('active');
+    showToast('Location Alarm Active', `Tracking destination: ${alarmData.destinationName}`, 'success');
   };
 
   // Stop Location Alarm tracking
@@ -432,6 +471,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setIsArrivedModalOpen(false);
     setIsEarlyAlertTriggered(false);
     startTimeRef.current = null;
+    showToast('Alarm Stopped', 'Location tracking deactivated', 'info');
   };
 
   // Snooze Location Alarm
@@ -554,6 +594,9 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateSettings,
         notificationPermission,
         requestNotificationPermission,
+        toasts,
+        showToast,
+        dismissToast,
         timeAlarms,
         ringingTimeAlarm,
         addTimeAlarm,
@@ -588,6 +631,7 @@ export const AlarmProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }}
     >
       {children}
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </AlarmContext.Provider>
   );
 };
@@ -599,3 +643,4 @@ export const useAlarm = () => {
   }
   return context;
 };
+
