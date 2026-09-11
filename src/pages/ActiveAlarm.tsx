@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio, MapPin, Square, Timer, AlertCircle } from 'lucide-react';
+import { MapPin, Square, AlertCircle } from 'lucide-react';
 import { useAlarm } from '../context/AlarmContext';
 import { MapView } from '../components/Map/MapView';
 import { EmptyState } from '../components/Common/EmptyState';
@@ -19,15 +19,15 @@ export const ActiveAlarm: React.FC = () => {
 
   if (!isTracking || !activeAlarm) {
     return (
-      <div className="space-y-6 animate-fadeIn">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-          Active Alarm Tracking
+      <div className="space-y-5 animate-slide-up">
+        <h1 className="text-2xl font-bold text-white tracking-tight">
+          Active Alarm
         </h1>
         <EmptyState
-          icon={Timer}
-          title="No Location Alarm Active"
-          description="You don't have any location tracking active right now. Pick a destination on the map to start tracking."
-          actionText="+ Create Location Alarm"
+          icon={MapPin}
+          title="No Active Alarm"
+          description="Start a location alarm to track your proximity to a destination in real-time."
+          actionText="Create Location Alarm"
           onAction={() => setActivePage('create')}
         />
       </div>
@@ -43,95 +43,94 @@ export const ActiveAlarm: React.FC = () => {
   const etaMins = currentDistance !== null ? estimateEtaMinutes(currentDistance) : null;
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
-      {/* Header Bar */}
+    <div className="space-y-5 animate-slide-up pb-12">
+      {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-              Tracking Proximity
+            <span className="w-2 h-2 rounded-full bg-green-500" />
+            <h1 className="text-2xl font-bold text-white tracking-tight">
+              Tracking
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Real-time proximity monitoring towards {activeAlarm.destinationName}
+          <p className="text-xs text-[#888888] mt-1">
+            Real-time proximity to {activeAlarm.destinationName}
           </p>
         </div>
 
         <button
           onClick={stopAlarm}
-          className="py-2.5 px-4 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-1.5"
+          className="py-2 px-4 bg-red-600 hover:bg-red-700 text-white font-medium text-xs rounded-md transition-colors flex items-center gap-1.5 cursor-pointer"
         >
-          <Square className="w-4 h-4 fill-current" />
-          <span>Stop Alarm</span>
+          <Square className="w-3.5 h-3.5 fill-current" />
+          <span>Stop</span>
         </button>
       </div>
 
-      {/* GPS Error Alert if any */}
+      {/* GPS Error */}
       {gpsError && (
-        <div className="p-3 bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 rounded-xl text-xs flex items-center gap-2">
+        <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-md text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <span>{gpsError}</span>
         </div>
       )}
 
-      {/* Proximity Hero Status */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-indigo-700/50">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>LIVE GPS TRACKING</span>
+      {/* Status Card */}
+      <div className="bg-[#0a0a0a] rounded-md border border-[#1a1a1a] p-5 sm:p-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-1">
+            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium bg-green-500/10 text-green-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              GPS TRACKING
             </span>
 
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
               {activeAlarm.destinationName}
             </h2>
-            <p className="text-xs sm:text-sm text-indigo-200/80 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-indigo-400" />
+            <p className="text-xs text-[#555555] flex items-center gap-2">
+              <MapPin className="w-3.5 h-3.5" />
               <span>{activeAlarm.address || 'Target Location'}</span>
-              <span>•</span>
-              <Radio className="w-4 h-4 text-indigo-400" />
-              <span>{activeAlarm.radius} m arrival radius</span>
+              <span className="text-[#333333]">•</span>
+              <span>{activeAlarm.radius}m radius</span>
             </p>
           </div>
 
-          {/* Large Live Distance Display */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/10 text-center min-w-[200px]">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-indigo-200/70">
-              Distance Remaining
+          {/* Distance Display */}
+          <div className="bg-black rounded-md p-4 border border-[#1a1a1a] text-center min-w-[180px]">
+            <span className="text-[10px] font-medium uppercase tracking-wider text-[#555555]">
+              Distance
             </span>
-            <div className="text-3xl sm:text-5xl font-black tracking-tight text-white mt-1">
+            <div className="text-3xl sm:text-4xl font-bold tracking-tight text-white mt-0.5">
               {formattedDist}
             </div>
             {etaMins !== null && (
-              <span className="inline-block mt-2 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
-                ~{etaMins} mins travel time
+              <span className="inline-block mt-1.5 text-xs text-[#888888]">
+                ~{etaMins} min
               </span>
             )}
           </div>
         </div>
 
-        {/* Visual Progress Bar */}
-        <div className="mt-6 pt-4 border-t border-white/10 relative z-10">
-          <div className="flex items-center justify-between text-xs text-indigo-200/80 mb-1.5 font-medium">
-            <span>Progress towards arrival geofence</span>
-            <span className="font-bold text-white">{progressPct}%</span>
+        {/* Progress Bar */}
+        <div className="mt-5 pt-4 border-t border-[#1a1a1a]">
+          <div className="flex items-center justify-between text-xs text-[#555555] mb-1.5">
+            <span>Progress</span>
+            <span className="text-white font-medium">{progressPct}%</span>
           </div>
-          <div className="w-full h-3 bg-slate-950/50 rounded-full overflow-hidden p-0.5 border border-white/10">
+          <div className="w-full h-1.5 bg-[#1a1a1a] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-400 via-emerald-400 to-emerald-300 rounded-full transition-all duration-500"
-              style={{ width: `${Math.max(4, progressPct)}%` }}
+              className="h-full bg-white rounded-full transition-all duration-500"
+              style={{ width: `${Math.max(2, progressPct)}%` }}
             />
           </div>
         </div>
       </div>
 
-      {/* Active Live Map */}
+      {/* Map */}
       <div className="space-y-2">
-        <h3 className="text-base font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-          <span>Live Geofence Map</span>
+        <h3 className="text-sm font-medium text-white flex items-center gap-2">
+          <MapPin className="w-3.5 h-3.5 text-[#888888]" />
+          <span>Live Map</span>
         </h3>
         <div className="h-[350px] sm:h-[450px]">
           <MapView

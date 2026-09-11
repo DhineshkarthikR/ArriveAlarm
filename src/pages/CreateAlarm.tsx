@@ -35,7 +35,6 @@ export const CreateAlarm: React.FC = () => {
     nowMs,
   } = useAlarm();
 
-  // Active creation mode tab ('time' vs 'location')
   const [activeTab, setActiveTab] = useState<'time' | 'location'>('time');
 
   // Time Alarm Form States
@@ -69,7 +68,6 @@ export const CreateAlarm: React.FC = () => {
 
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Computed 24-hour value for Time Alarm
   const computed24Hour = (): number => {
     if (userSettings.timeFormat === '24h') return hour;
     let h24 = hour % 12;
@@ -77,7 +75,6 @@ export const CreateAlarm: React.FC = () => {
     return h24;
   };
 
-  // Calculate live next ring timestamp & countdown for preview
   const live24Hour = computed24Hour();
   const nextRingTimestamp = calculateNextRingTimestamp(live24Hour, minute, repeat, customDays);
   const liveCountdownText = getCountdownText(nextRingTimestamp, nowMs);
@@ -90,7 +87,6 @@ export const CreateAlarm: React.FC = () => {
     }
   };
 
-  // Submit Time Alarm
   const handleSaveTimeAlarm = (e: React.FormEvent) => {
     e.preventDefault();
     if (!timeLabel.trim()) {
@@ -115,7 +111,6 @@ export const CreateAlarm: React.FC = () => {
     setActivePage('home');
   };
 
-  // Submit Location Alarm
   const handleStartLocationAlarm = () => {
     if (!destinationName.trim()) {
       setValidationError('Please specify a destination name.');
@@ -163,58 +158,57 @@ export const CreateAlarm: React.FC = () => {
     startAlarm(newAlarm);
   };
 
-  // Stepped wizard step state (1: Destination, 2: Radius, 3: Sound & Config, 4: Confirmation)
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   return (
-    <div className="space-y-6 animate-slide-up pb-12">
+    <div className="space-y-5 animate-slide-up pb-12">
       {/* Title & Mode Switcher */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#0a0a0a] p-6 rounded-2xl border border-[#222222]">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
             Set New Alarm
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 font-sans mt-1">
-            Choose between Location Arrival Geofence (GPS) or Precise Time Alarm.
+          <p className="text-xs text-[#888888] mt-1">
+            Choose between a time-based alarm or location-based geofence.
           </p>
         </div>
 
-        {/* Tab Selection Switch */}
-        <div className="flex items-center bg-[#111111] p-1 rounded-xl border border-[#222222]">
+        {/* Tab Switch */}
+        <div className="flex items-center bg-[#0a0a0a] p-0.5 rounded-md border border-[#1a1a1a]">
           <button
             onClick={() => setActiveTab('time')}
-            className={`px-4 py-2 text-xs font-mono font-bold rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-medium rounded transition-colors flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'time'
-                ? 'bg-white text-black shadow-sm'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-white text-black'
+                : 'text-[#666666] hover:text-white'
             }`}
           >
-            <AlarmClock className="w-4 h-4" />
-            <span>Time Alarm</span>
+            <AlarmClock className="w-3.5 h-3.5" />
+            <span>Time</span>
           </button>
 
           <button
             onClick={() => setActiveTab('location')}
-            className={`px-4 py-2 text-xs font-mono font-bold rounded-lg transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-3 py-1.5 text-xs font-medium rounded transition-colors flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'location'
-                ? 'bg-white text-black shadow-sm'
-                : 'text-neutral-400 hover:text-white'
+                ? 'bg-white text-black'
+                : 'text-[#666666] hover:text-white'
             }`}
           >
-            <MapPin className="w-4 h-4" />
-            <span>Location Alarm</span>
+            <MapPin className="w-3.5 h-3.5" />
+            <span>Location</span>
           </button>
         </div>
       </div>
 
-      {/* Stepped Wizard Progress Indicator for Location Alarms */}
+      {/* Wizard Steps for Location */}
       {activeTab === 'location' && (
-        <div className="grid grid-cols-4 gap-2 bg-[#0a0a0a] p-3 rounded-2xl border border-[#222222]">
+        <div className="grid grid-cols-4 gap-1.5">
           {[
-            { num: 1, title: '01. DESTINATION' },
-            { num: 2, title: '02. RADIUS' },
-            { num: 3, title: '03. ALERT SOUND' },
-            { num: 4, title: '04. ACTIVATE' },
+            { num: 1, title: '1. Destination' },
+            { num: 2, title: '2. Radius' },
+            { num: 3, title: '3. Sound' },
+            { num: 4, title: '4. Activate' },
           ].map((s) => {
             const isDone = currentStep > s.num;
             const isCurrent = currentStep === s.num;
@@ -222,12 +216,12 @@ export const CreateAlarm: React.FC = () => {
               <button
                 key={s.num}
                 onClick={() => setCurrentStep(s.num)}
-                className={`py-2.5 px-3 rounded-xl text-[11px] font-mono font-bold transition-all text-center border cursor-pointer ${
+                className={`py-2 px-2 rounded-md text-[11px] font-medium transition-colors text-center border cursor-pointer ${
                   isCurrent
-                    ? 'bg-white/10 text-white border-white/30'
+                    ? 'bg-white/5 text-white border-[#333333]'
                     : isDone
-                    ? 'bg-[#111111] text-emerald-400 border-emerald-500/30'
-                    : 'bg-[#111111] text-neutral-500 border-[#222222]'
+                    ? 'bg-[#0a0a0a] text-green-500 border-green-500/20'
+                    : 'bg-[#0a0a0a] text-[#555555] border-[#1a1a1a]'
                 }`}
               >
                 {s.title}
@@ -237,25 +231,25 @@ export const CreateAlarm: React.FC = () => {
         </div>
       )}
 
-      {/* ================= TIME ALARM TAB ================= */}
+      {/* TIME ALARM TAB */}
       {activeTab === 'time' && (
-        <form onSubmit={handleSaveTimeAlarm} className="max-w-2xl mx-auto space-y-6">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-            {/* Hour & Minute Picker */}
+        <form onSubmit={handleSaveTimeAlarm} className="max-w-2xl mx-auto space-y-5">
+          <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-md p-5 sm:p-6 space-y-5">
+            {/* Time Picker */}
             <div className="space-y-3">
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <label className="text-xs font-medium uppercase tracking-wider text-[#888888]">
                 Set Alarm Time
               </label>
 
-              <div className="flex items-center justify-center gap-3 bg-slate-50 dark:bg-slate-950 p-6 rounded-3xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-center gap-3 bg-black p-5 rounded-md border border-[#1a1a1a]">
                 {userSettings.timeFormat === '12h' ? (
                   <>
                     <div className="flex flex-col items-center">
-                      <span className="text-[11px] text-slate-400 font-semibold mb-1">Hour</span>
+                      <span className="text-[10px] text-[#555555] mb-1">Hour</span>
                       <select
                         value={hour}
                         onChange={(e) => setHour(parseInt(e.target.value))}
-                        className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl text-3xl font-black font-mono text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
+                        className="px-3 py-2.5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-md text-2xl font-bold font-mono text-white focus:outline-none focus:border-[#333333]"
                       >
                         {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
                           <option key={h} value={h}>
@@ -265,14 +259,14 @@ export const CreateAlarm: React.FC = () => {
                       </select>
                     </div>
 
-                    <span className="text-3xl font-black text-indigo-500 pt-5">:</span>
+                    <span className="text-2xl font-bold text-[#555555] pt-4">:</span>
 
                     <div className="flex flex-col items-center">
-                      <span className="text-[11px] text-slate-400 font-semibold mb-1">Minute</span>
+                      <span className="text-[10px] text-[#555555] mb-1">Minute</span>
                       <select
                         value={minute}
                         onChange={(e) => setMinute(parseInt(e.target.value))}
-                        className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl text-3xl font-black font-mono text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
+                        className="px-3 py-2.5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-md text-2xl font-bold font-mono text-white focus:outline-none focus:border-[#333333]"
                       >
                         {Array.from({ length: 60 }, (_, i) => i).map((m) => (
                           <option key={m} value={m}>
@@ -282,15 +276,15 @@ export const CreateAlarm: React.FC = () => {
                       </select>
                     </div>
 
-                    <div className="flex flex-col items-center pl-2 pt-5">
-                      <div className="flex flex-col bg-slate-200 dark:bg-slate-800 p-1 rounded-2xl border border-slate-300 dark:border-slate-700">
+                    <div className="flex flex-col items-center pl-2 pt-4">
+                      <div className="flex flex-col bg-[#0a0a0a] p-0.5 rounded-md border border-[#1a1a1a]">
                         <button
                           type="button"
                           onClick={() => setPeriod('AM')}
-                          className={`px-3 py-1.5 text-xs font-black rounded-xl transition-all ${
+                          className={`px-2.5 py-1 text-xs font-medium rounded transition-colors ${
                             period === 'AM'
-                              ? 'bg-indigo-600 text-white shadow-sm'
-                              : 'text-slate-600 dark:text-slate-400'
+                              ? 'bg-white text-black'
+                              : 'text-[#555555]'
                           }`}
                         >
                           AM
@@ -298,10 +292,10 @@ export const CreateAlarm: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setPeriod('PM')}
-                          className={`px-3 py-1.5 text-xs font-black rounded-xl transition-all ${
+                          className={`px-2.5 py-1 text-xs font-medium rounded transition-colors ${
                             period === 'PM'
-                              ? 'bg-indigo-600 text-white shadow-sm'
-                              : 'text-slate-600 dark:text-slate-400'
+                              ? 'bg-white text-black'
+                              : 'text-[#555555]'
                           }`}
                         >
                           PM
@@ -312,11 +306,11 @@ export const CreateAlarm: React.FC = () => {
                 ) : (
                   <>
                     <div className="flex flex-col items-center">
-                      <span className="text-[11px] text-slate-400 font-semibold mb-1">Hour (24H)</span>
+                      <span className="text-[10px] text-[#555555] mb-1">Hour (24H)</span>
                       <select
                         value={hour}
                         onChange={(e) => setHour(parseInt(e.target.value))}
-                        className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl text-3xl font-black font-mono text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
+                        className="px-3 py-2.5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-md text-2xl font-bold font-mono text-white focus:outline-none focus:border-[#333333]"
                       >
                         {Array.from({ length: 24 }, (_, i) => i).map((h) => (
                           <option key={h} value={h}>
@@ -326,14 +320,14 @@ export const CreateAlarm: React.FC = () => {
                       </select>
                     </div>
 
-                    <span className="text-3xl font-black text-indigo-500 pt-5">:</span>
+                    <span className="text-2xl font-bold text-[#555555] pt-4">:</span>
 
                     <div className="flex flex-col items-center">
-                      <span className="text-[11px] text-slate-400 font-semibold mb-1">Minute</span>
+                      <span className="text-[10px] text-[#555555] mb-1">Minute</span>
                       <select
                         value={minute}
                         onChange={(e) => setMinute(parseInt(e.target.value))}
-                        className="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl text-3xl font-black font-mono text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
+                        className="px-3 py-2.5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-md text-2xl font-bold font-mono text-white focus:outline-none focus:border-[#333333]"
                       >
                         {Array.from({ length: 60 }, (_, i) => i).map((m) => (
                           <option key={m} value={m}>
@@ -346,16 +340,16 @@ export const CreateAlarm: React.FC = () => {
                 )}
               </div>
 
-              {/* Live Countdown Banner */}
-              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900 text-indigo-700 dark:text-indigo-300 rounded-2xl text-xs font-bold flex items-center justify-center gap-2">
-                <Clock className="w-4 h-4 text-indigo-500" />
+              {/* Countdown */}
+              <div className="p-2.5 bg-[#0a0a0a] border border-[#1a1a1a] text-[#888888] rounded-md text-xs font-medium flex items-center justify-center gap-2">
+                <Clock className="w-3.5 h-3.5" />
                 <span>{liveCountdownText}</span>
               </div>
             </div>
 
-            {/* Label Input */}
+            {/* Label */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <label className="text-xs font-medium text-[#888888] uppercase tracking-wider">
                 Alarm Label
               </label>
               <input
@@ -363,21 +357,21 @@ export const CreateAlarm: React.FC = () => {
                 value={timeLabel}
                 onChange={(e) => setTimeLabel(e.target.value)}
                 placeholder="Label (e.g. Morning Routine, Work, Gym)"
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-semibold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2.5 bg-black border border-[#1a1a1a] rounded-md text-sm text-white placeholder:text-[#555555] focus:outline-none focus:border-[#333333]"
               />
             </div>
 
-            {/* Repeat Options */}
+            {/* Repeat */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Repeat className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Repeat Option</span>
+              <label className="text-xs font-medium text-[#888888] uppercase tracking-wider flex items-center gap-1.5">
+                <Repeat className="w-3 h-3" />
+                <span>Repeat</span>
               </label>
 
               <select
                 value={repeat}
                 onChange={(e) => setRepeat(e.target.value as RepeatOption)}
-                className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm font-semibold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2.5 bg-black border border-[#1a1a1a] rounded-md text-sm text-white focus:outline-none focus:border-[#333333]"
               >
                 <option value="once">Once</option>
                 <option value="daily">Every day</option>
@@ -387,7 +381,7 @@ export const CreateAlarm: React.FC = () => {
               </select>
 
               {repeat === 'custom' && (
-                <div className="grid grid-cols-7 gap-1.5 pt-2">
+                <div className="grid grid-cols-7 gap-1.5 pt-1">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((dayName, idx) => {
                     const isSelected = customDays.includes(idx);
                     return (
@@ -395,10 +389,10 @@ export const CreateAlarm: React.FC = () => {
                         key={idx}
                         type="button"
                         onClick={() => toggleDay(idx)}
-                        className={`py-2 text-xs font-bold rounded-xl transition-all ${
+                        className={`py-1.5 text-xs font-medium rounded-md transition-colors ${
                           isSelected
-                            ? 'bg-indigo-600 text-white shadow-sm'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                            ? 'bg-white text-black'
+                            : 'bg-[#0a0a0a] text-[#555555] border border-[#1a1a1a]'
                         }`}
                       >
                         {dayName}
@@ -409,7 +403,6 @@ export const CreateAlarm: React.FC = () => {
               )}
             </div>
 
-            {/* Sound Selector */}
             <SoundSelector
               sound={timeSound}
               volume={timeVolume}
@@ -417,10 +410,10 @@ export const CreateAlarm: React.FC = () => {
               onChangeVolume={setTimeVolume}
             />
 
-            {/* Snooze Duration */}
+            {/* Snooze */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                Default Snooze Duration
+              <label className="text-xs font-medium text-[#888888] uppercase tracking-wider">
+                Snooze Duration
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[1, 5, 10, 15].map((mins) => (
@@ -428,10 +421,10 @@ export const CreateAlarm: React.FC = () => {
                     key={mins}
                     type="button"
                     onClick={() => setSnoozeDuration(mins)}
-                    className={`py-2 text-xs font-bold rounded-xl border transition-all ${
+                    className={`py-2 text-xs font-medium rounded-md border transition-colors ${
                       snoozeDuration === mins
-                        ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        ? 'bg-white text-black border-white'
+                        : 'bg-[#0a0a0a] border-[#1a1a1a] text-[#888888] hover:border-[#333333]'
                     }`}
                   >
                     {mins} min
@@ -440,30 +433,28 @@ export const CreateAlarm: React.FC = () => {
               </div>
             </div>
 
-            {/* Validation Error alert */}
             {validationError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 rounded-xl text-xs flex items-center gap-2">
+              <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-md text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{validationError}</span>
               </div>
             )}
 
-            {/* Save Button */}
             <button
               type="submit"
-              className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-black text-sm rounded-2xl shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2 transform active:scale-98 cursor-pointer"
+              className="w-full py-3 px-6 bg-white hover:bg-neutral-200 text-black font-medium text-sm rounded-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              <PlusCircle className="w-5 h-5" />
-              <span>SAVE ALARM</span>
+              <PlusCircle className="w-4 h-4" />
+              <span>Save Alarm</span>
             </button>
           </div>
         </form>
       )}
 
-      {/* ================= LOCATION ALARM TAB ================= */}
+      {/* LOCATION ALARM TAB */}
       {activeTab === 'location' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Map Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* Map */}
           <div className="lg:col-span-7 space-y-3">
             <LocationSearch
               onSelectLocation={(loc) => {
@@ -494,66 +485,66 @@ export const CreateAlarm: React.FC = () => {
               destinationName={destinationName}
             />
 
-            <div className="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+            <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-md p-2.5 text-[11px] text-[#555555] flex items-center justify-between">
               <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-indigo-500" />
-                <span>Click map or drag pin to update destination & coordinates</span>
+                <MapPin className="w-3 h-3" />
+                <span>Click map or drag pin to set destination</span>
               </span>
-              <span className="font-mono text-[10px] text-slate-400">
+              <span className="font-mono text-[10px]">
                 {coords.lat.toFixed(4)}, {coords.lng.toFixed(4)}
               </span>
             </div>
           </div>
 
-          {/* Right Configuration Section */}
-          <div className="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm space-y-6">
-            <div className="space-y-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Destination Information
+          {/* Config Panel */}
+          <div className="lg:col-span-5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-md p-5 space-y-5">
+            <div className="space-y-2 pb-4 border-b border-[#1a1a1a]">
+              <label className="text-xs font-medium uppercase tracking-wider text-[#888888]">
+                Destination
               </label>
               <div>
                 <input
                   type="text"
                   value={destinationName}
                   onChange={(e) => setDestinationName(e.target.value)}
-                  placeholder="Destination Name (e.g. College)"
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-base font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Destination Name"
+                  className="w-full px-3 py-2 bg-black border border-[#1a1a1a] rounded-md text-sm font-medium text-white focus:outline-none focus:border-[#333333]"
                 />
-                <p className="text-xs text-slate-400 mt-1 truncate">📍 {address}</p>
+                <p className="text-xs text-[#555555] mt-1 truncate">{address}</p>
               </div>
             </div>
 
             <RadiusSelector radius={radius} onChange={(r) => setRadius(r)} />
 
-            {/* Early Alert Toggle */}
-            <div className="pt-2 pb-4 border-b border-slate-100 dark:border-slate-800 space-y-3">
+            {/* Early Alert */}
+            <div className="pt-2 pb-4 border-b border-[#1a1a1a] space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-amber-500" />
-                    <span>🚨 Alert before reaching</span>
+                  <label className="text-xs sm:text-sm font-medium text-white flex items-center gap-2">
+                    <Layers className="w-4 h-4 text-[#888888]" />
+                    <span>Early alert</span>
                   </label>
-                  <p className="text-[11px] text-slate-400">Receive an early warning before arrival</p>
+                  <p className="text-[11px] text-[#555555]">Warning before reaching destination</p>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => setEarlyAlertEnabled(!earlyAlertEnabled)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                    earlyAlertEnabled ? 'bg-amber-500' : 'bg-slate-200 dark:bg-slate-700'
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+                    earlyAlertEnabled ? 'bg-white' : 'bg-[#333333]'
                   }`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      earlyAlertEnabled ? 'translate-x-5' : 'translate-x-0'
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow transition ${
+                      earlyAlertEnabled ? 'translate-x-4 bg-black' : 'translate-x-0 bg-[#666666]'
                     }`}
                   />
                 </button>
               </div>
 
               {earlyAlertEnabled && (
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 space-y-2 animate-fadeIn">
-                  <label className="text-xs font-semibold text-amber-800 dark:text-amber-300">
+                <div className="bg-amber-500/5 border border-amber-500/10 rounded-md p-3 space-y-2">
+                  <label className="text-xs font-medium text-amber-400/80">
                     Early Alert Distance
                   </label>
                   <div className="grid grid-cols-4 gap-2">
@@ -562,10 +553,10 @@ export const CreateAlarm: React.FC = () => {
                         key={d}
                         type="button"
                         onClick={() => setEarlyAlertDistance(d)}
-                        className={`py-1.5 text-xs font-semibold rounded-xl border transition-all ${
+                        className={`py-1.5 text-xs font-medium rounded-md border transition-colors ${
                           earlyAlertDistance === d
-                            ? 'bg-amber-500 text-white border-amber-500'
-                            : 'bg-white dark:bg-slate-900 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200'
+                            ? 'bg-amber-500 text-black border-amber-500'
+                            : 'bg-black border-[#1a1a1a] text-[#888888]'
                         }`}
                       >
                         {d >= 1000 ? `${d / 1000} km` : `${d} m`}
@@ -585,63 +576,31 @@ export const CreateAlarm: React.FC = () => {
               onChangeDuration={setDurationSeconds}
             />
 
-            {/* Checkbox Toggles */}
+            {/* Toggles */}
             <div className="space-y-3 pt-2">
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  <Smartphone className="w-4 h-4 text-slate-400" />
-                  <span>Vibrate when arriving</span>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={vibrationEnabled}
-                  onChange={(e) => setVibrationEnabled(e.target.checked)}
-                  className="w-4 h-4 accent-indigo-600 rounded"
-                />
-              </label>
-
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  <BellRing className="w-4 h-4 text-indigo-400" />
-                  <span>Browser notification</span>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={notificationEnabled}
-                  onChange={(e) => setNotificationEnabled(e.target.checked)}
-                  className="w-4 h-4 accent-indigo-600 rounded"
-                />
-              </label>
-
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  <Layers className="w-4 h-4 text-emerald-400" />
-                  <span>Stop tracking after arrival</span>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={autoStop}
-                  onChange={(e) => setAutoStop(e.target.checked)}
-                  className="w-4 h-4 accent-indigo-600 rounded"
-                />
-              </label>
-
-              <label className="flex items-center justify-between cursor-pointer">
-                <span className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  <Star className="w-4 h-4 text-amber-400" />
-                  <span>Save to My Places</span>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={isSavePlace}
-                  onChange={(e) => setIsSavePlace(e.target.checked)}
-                  className="w-4 h-4 accent-indigo-600 rounded"
-                />
-              </label>
+              {[
+                { label: 'Vibrate on arrival', icon: Smartphone, checked: vibrationEnabled, onChange: setVibrationEnabled },
+                { label: 'Browser notification', icon: BellRing, checked: notificationEnabled, onChange: setNotificationEnabled },
+                { label: 'Stop after arrival', icon: Layers, checked: autoStop, onChange: setAutoStop },
+                { label: 'Save to My Places', icon: Star, checked: isSavePlace, onChange: setIsSavePlace },
+              ].map(({ label, icon: Icon, checked, onChange }) => (
+                <label key={label} className="flex items-center justify-between cursor-pointer">
+                  <span className="flex items-center gap-2 text-xs sm:text-sm text-[#888888]">
+                    <Icon className="w-4 h-4 text-[#555555]" />
+                    <span>{label}</span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => onChange(e.target.checked)}
+                    className="w-4 h-4 accent-white rounded"
+                  />
+                </label>
+              ))}
             </div>
 
             {validationError && (
-              <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 rounded-xl text-xs flex items-center gap-2">
+              <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-md text-xs flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{validationError}</span>
               </div>
@@ -650,18 +609,18 @@ export const CreateAlarm: React.FC = () => {
             {isTracking ? (
               <button
                 onClick={stopAlarm}
-                className="w-full py-4 px-6 bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2"
+                className="w-full py-3 px-6 bg-red-600 hover:bg-red-700 text-white font-medium text-sm rounded-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Square className="w-4 h-4 fill-current" />
-                <span>Stop Active Location Alarm</span>
+                <span>Stop Active Alarm</span>
               </button>
             ) : (
               <button
                 onClick={handleStartLocationAlarm}
-                className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-black text-sm rounded-2xl shadow-lg shadow-indigo-600/25 transition-all flex items-center justify-center gap-2 transform active:scale-98"
+                className="w-full py-3 px-6 bg-white hover:bg-neutral-200 text-black font-medium text-sm rounded-md transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <BellRing className="w-5 h-5" />
-                <span>🔔 START LOCATION ALARM</span>
+                <BellRing className="w-4 h-4" />
+                <span>Start Location Alarm</span>
               </button>
             )}
           </div>

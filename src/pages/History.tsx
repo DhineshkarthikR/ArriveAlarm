@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { History as HistoryIcon, Search, Trash2, MapPin, Clock, Radio, X } from 'lucide-react';
 import { useAlarm } from '../context/AlarmContext';
-import { Card } from '../components/Common/Card';
 import { EmptyState } from '../components/Common/EmptyState';
 import { deleteHistoryEntry, clearAllHistory } from '../utils/storage';
 
@@ -27,43 +26,43 @@ export const History: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-12">
+    <div className="space-y-5 animate-slide-up pb-12">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
-            <HistoryIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
-            <span>Alarm History</span>
+          <h1 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2">
+            <HistoryIcon className="w-5 h-5 text-[#888888]" />
+            <span>History</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Log of completed arrivals and geofence tracking sessions.
+          <p className="text-xs text-[#888888] mt-1">
+            Completed arrivals and tracking sessions.
           </p>
         </div>
 
         {history.length > 0 && (
           <button
             onClick={handleClearAll}
-            className="self-start sm:self-auto py-2 px-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-semibold text-xs rounded-xl border border-rose-500/20 transition-all flex items-center gap-1.5"
+            className="self-start py-2 px-3 text-red-400 hover:text-red-300 font-medium text-xs rounded-md border border-red-500/20 hover:border-red-500/40 transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>Clear All History</span>
+            <span>Clear All</span>
           </button>
         )}
       </div>
 
       {history.length > 0 && (
         <div className="relative">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-[#555555] pointer-events-none" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search history by destination name..."
-            className="w-full pl-10 pr-10 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 shadow-xs"
+            placeholder="Search history..."
+            className="w-full pl-9 pr-9 py-2.5 bg-[#0a0a0a] border border-[#1a1a1a] rounded-md text-xs text-white placeholder:text-[#555555] focus:outline-none focus:border-[#333333]"
           />
           {searchTerm && (
             <button
               onClick={() => setSearchTerm('')}
-              className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              className="absolute right-3 top-2.5 text-[#555555] hover:text-white cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -74,68 +73,67 @@ export const History: React.FC = () => {
       {filteredHistory.length === 0 ? (
         <EmptyState
           icon={HistoryIcon}
-          title={history.length === 0 ? 'No Alarm History Yet' : 'No Matching Results'}
+          title={history.length === 0 ? 'No History Yet' : 'No Results'}
           description={
             history.length === 0
-              ? 'Your completed location alarms will appear here after you arrive at your destinations.'
-              : `No history entries match "${searchTerm}".`
+              ? 'Completed location alarms will appear here.'
+              : `No entries match "${searchTerm}".`
           }
-          actionText={history.length === 0 ? '+ Create Location Alarm' : undefined}
+          actionText={history.length === 0 ? 'Create Location Alarm' : undefined}
           onAction={history.length === 0 ? () => setActivePage('create') : undefined}
         />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-2">
           {filteredHistory.map((item) => (
-            <Card key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4">
+            <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border border-[#1a1a1a] rounded-md hover:border-[#2a2a2a] transition-colors">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
-                  <MapPin className="w-5 h-5" />
+                <div className="w-8 h-8 rounded-md bg-[#111111] border border-[#1a1a1a] flex items-center justify-center shrink-0 mt-0.5">
+                  <MapPin className="w-4 h-4 text-[#888888]" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">
+                  <h3 className="font-medium text-sm text-white">
                     {item.destinationName}
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs sm:max-w-md">
-                    {item.address || 'Arrived Location'}
+                  <p className="text-xs text-[#555555] truncate max-w-xs sm:max-w-md">
+                    {item.address || 'Location'}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-[#555555] mt-1.5">
                     <span className="flex items-center gap-1">
-                      <Radio className="w-3.5 h-3.5 text-indigo-500" />
-                      <span>Arrived within {item.radius} m</span>
+                      <Radio className="w-3 h-3" />
+                      <span>{item.radius}m</span>
                     </span>
-                    <span>•</span>
                     <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-emerald-500" />
-                      <span>Duration: {item.durationMinutes} min</span>
+                      <Clock className="w-3 h-3" />
+                      <span>{item.durationMinutes} min</span>
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between sm:justify-end gap-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between sm:justify-end gap-3">
                 <div className="text-left sm:text-right">
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                  <span className="text-xs text-[#888888] block">
                     {new Date(item.arrivedAt).toLocaleDateString([], {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric',
                     })}
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-[#555555]">
                     {new Date(item.arrivedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
 
                 <button
                   onClick={() => handleDelete(item.id)}
-                  className="p-2 text-slate-400 hover:text-rose-500 rounded-xl transition-colors"
-                  title="Delete entry"
+                  className="p-1.5 text-[#555555] hover:text-red-400 rounded-md transition-colors cursor-pointer"
+                  title="Delete"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       )}
